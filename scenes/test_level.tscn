@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bk1gat81w1yj8"]
+
+[ext_resource type="Texture2D" uid="uid://bdqjwso3qh0ij" path="res://icon.svg" id="1_2venv"]
+[ext_resource type="PackedScene" uid="uid://rat2k603xwh0" path="res://scenes/rope.tscn" id="1_x4b8f"]
+[ext_resource type="PackedScene" uid="uid://b6kuo6f5b5o72" path="res://scenes/movable_object.tscn" id="2_paw1w"]
+[ext_resource type="PackedScene" uid="uid://mjregofqx6qj" path="res://scenes/character.tscn" id="3_j6w7d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(1146.25, 20)
+
+[node name="Test-Level" type="Node2D" unique_id=96154699]
+position = Vector2(548, 406)
+
+[node name="Floor" type="StaticBody2D" parent="." unique_id=438273032]
+position = Vector2(23, 230)
+
+[node name="Rope" parent="Floor" unique_id=1925167758 instance=ExtResource("1_x4b8f")]
+position = Vector2(-13, -427)
+
+[node name="Sprite2D" type="Sprite2D" parent="Floor" unique_id=1047080973]
+position = Vector2(0, 3.8146973e-06)
+scale = Vector2(8.9609375, 0.15625)
+texture = ExtResource("1_2venv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=1383469834]
+shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="Movable-Object" parent="." unique_id=959754978 instance=ExtResource("2_paw1w")]
+position = Vector2(514, 118)
+
+[node name="Movable-Object2" parent="." unique_id=1061944045 instance=ExtResource("2_paw1w")]
+position = Vector2(-329, 89)
+
+[node name="Character" parent="." unique_id=274185254 instance=ExtResource("3_j6w7d")]
+position = Vector2(-127, 111)
