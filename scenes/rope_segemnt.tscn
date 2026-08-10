@@ -6,9 +6,9 @@
 height = 40.0
 
 [node name="Rope-Segemnt" type="RigidBody2D" unique_id=2145396072]
-collision_layer = 4
-collision_mask = 7
-mass = 0.2
+collision_layer = 8
+collision_mask = 15
+mass = 0.275
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1015772159]
 position = Vector2(-3.8146973e-06, -7.1525574e-07)
