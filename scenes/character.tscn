@@ -2,12 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://bdqjwso3qh0ij" path="res://icon.svg" id="1_agfs1"]
 [ext_resource type="Script" uid="uid://ekgtxq17mo4u" path="res://scripts/character_movement.gd" id="1_rkhd4"]
+[ext_resource type="PackedScene" uid="uid://srggaso1q30f" path="res://scenes/gun.tscn" id="3_lrhn5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
 size = Vector2(50, 128)
 
 [node name="Character" type="Node2D" unique_id=274185254]
-position = Vector2(372, 365)
+position = Vector2(275, 126)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=618285371]
 collision_layer = 2
@@ -20,3 +21,6 @@ texture = ExtResource("1_agfs1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=1650946999]
 shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="Gun" parent="CharacterBody2D" unique_id=1013535894 instance=ExtResource("3_lrhn5")]
+scale = Vector2(4, 4)

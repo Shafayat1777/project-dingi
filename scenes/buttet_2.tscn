@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://b1fjepdu7p2ru"]
+
+[ext_resource type="Script" uid="uid://kvmsdcvgd0dq" path="res://scripts/buttet_2.gd" id="1_8kfy2"]
+[ext_resource type="Texture2D" uid="uid://02e6pbrbjspo" path="res://assets/All_Fire_Bullet_Pixel_16x16_00.png" id="1_u5ver"]
+[ext_resource type="Texture2D" uid="uid://cm17mgiwk47ul" path="res://assets/Yellow Effect Bullet Impact Explosion 32x32.png" id="2_8kfy2"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6f4wy"]
+radius = 11.9998665
+height = 65.99927
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y25gk"]
+atlas = ExtResource("1_u5ver")
+region = Rect2(256, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l5glv"]
+atlas = ExtResource("1_u5ver")
+region = Rect2(272, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eoqba"]
+atlas = ExtResource("1_u5ver")
+region = Rect2(288, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qncy5"]
+atlas = ExtResource("1_u5ver")
+region = Rect2(304, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tamys"]
+atlas = ExtResource("2_8kfy2")
+region = Rect2(512, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_26lx3"]
+atlas = ExtResource("2_8kfy2")
+region = Rect2(544, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1cfmv"]
+atlas = ExtResource("2_8kfy2")
+region = Rect2(576, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k76ql"]
+atlas = ExtResource("2_8kfy2")
+region = Rect2(608, 352, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6f4wy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y25gk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l5glv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eoqba")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qncy5")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tamys")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_26lx3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1cfmv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k76ql")
+}],
+"loop": 0,
+"name": &"impact",
+"speed": 15.0
+}]
+
+[node name="Buttet-2" type="Area2D" unique_id=1782089896]
+collision_layer = 16
+collision_mask = 13
+script = ExtResource("1_8kfy2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=821905927]
+rotation = 1.5660712
+shape = SubResource("CapsuleShape2D_6f4wy")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2023759326]
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_6f4wy")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=801709017]
+rect = Rect2(-34, -13, 66.02878, 26)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
