@@ -15,6 +15,7 @@ position = Vector2(548, 406)
 position = Vector2(23, 230)
 
 [node name="Rope" parent="Floor" unique_id=1925167758 instance=ExtResource("1_x4b8f")]
+visible = false
 position = Vector2(-13, -427)
 
 [node name="Sprite2D" type="Sprite2D" parent="Floor" unique_id=1047080973]
@@ -26,9 +27,11 @@ texture = ExtResource("1_2venv")
 shape = SubResource("RectangleShape2D_6f4wy")
 
 [node name="Movable-Object" parent="." unique_id=959754978 instance=ExtResource("2_paw1w")]
+visible = false
 position = Vector2(514, 118)
 
 [node name="Movable-Object2" parent="." unique_id=1061944045 instance=ExtResource("2_paw1w")]
+visible = false
 position = Vector2(-329, 89)
 
 [node name="Character" parent="." unique_id=274185254 instance=ExtResource("3_j6w7d")]

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://x5fxv3eedbrk"]
+
+[ext_resource type="Texture2D" uid="uid://ko58v2s2ma61" path="res://assets/tileset/Background_0.png" id="1_qg87a"]
+[ext_resource type="Texture2D" uid="uid://bklqn10pjou44" path="res://assets/tileset/Background_1.png" id="2_4img0"]
+
+[node name="Background" type="Node2D" unique_id=1523714312]
+
+[node name="Background-0" type="Sprite2D" parent="." unique_id=868838385]
+z_index = -10
+position = Vector2(602, 333)
+scale = Vector2(1.7932692, 1.7932693)
+texture = ExtResource("1_qg87a")
+
+[node name="Background-1" type="Sprite2D" parent="." unique_id=1060429508]
+position = Vector2(602, 324)
+scale = Vector2(1.6520431, 1.6520432)
+texture = ExtResource("2_4img0")

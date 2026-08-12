@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://b7arg3h5k58jg"]
+
+[ext_resource type="Script" uid="uid://mdfel3tcp310" path="res://scripts/hand_rope.gd" id="1_4fjhr"]
+[ext_resource type="PackedScene" uid="uid://btatlt4kp3o" path="res://scenes/rope_head.tscn" id="1_g4sco"]
+[ext_resource type="PackedScene" uid="uid://ckoudjqsk7jmn" path="res://scenes/rope_segemnt.tscn" id="2_4fjhr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(36, 64)
+
+[node name="Hand-Rope" type="Area2D" unique_id=1149286150]
+script = ExtResource("1_4fjhr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=416596383]
+shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="Rope-Head" parent="." unique_id=1266108202 instance=ExtResource("1_g4sco")]
+rotation = -1.5746022
+scale = Vector2(0.99999994, 0.99999994)
+mass = 0.2
+
+[node name="Rope-Segemnt" parent="." unique_id=2145396072 instance=ExtResource("2_4fjhr")]
+position = Vector2(0, 52)
+mass = 0.2
+
+[node name="Rope-Segemnt2" parent="." unique_id=2047622007 instance=ExtResource("2_4fjhr")]
+position = Vector2(0, 92)
+mass = 0.2
+
+[node name="Rope-Segemnt3" parent="." unique_id=692145643 instance=ExtResource("2_4fjhr")]
+position = Vector2(0, 132)
+mass = 0.2
+
+[node name="Rope-Segemnt4" parent="." unique_id=2055527139 instance=ExtResource("2_4fjhr")]
+position = Vector2(0, 172)
+mass = 0.2
+
+[node name="Rope-Segemnt5" parent="." unique_id=445105226 instance=ExtResource("2_4fjhr")]
+position = Vector2(0, 212)
+mass = 0.2
+
+[node name="Rope-Segemnt6" parent="." unique_id=1298046549 instance=ExtResource("2_4fjhr")]
+position = Vector2(0, 252)
+mass = 0.2
+
+[node name="PinJoint2D" type="PinJoint2D" parent="." unique_id=532172365]
+position = Vector2(0, 32)
+node_a = NodePath("../Rope-Head")
+node_b = NodePath("../Rope-Segemnt")
+
+[node name="PinJoint2D2" type="PinJoint2D" parent="." unique_id=562662855]
+position = Vector2(0, 72)
+node_a = NodePath("../Rope-Segemnt")
+node_b = NodePath("../Rope-Segemnt2")
+
+[node name="PinJoint2D3" type="PinJoint2D" parent="." unique_id=1993931210]
+position = Vector2(0, 112)
+node_a = NodePath("../Rope-Segemnt2")
+node_b = NodePath("../Rope-Segemnt3")
+
+[node name="PinJoint2D4" type="PinJoint2D" parent="." unique_id=1372932203]
+position = Vector2(0, 152)
+node_a = NodePath("../Rope-Segemnt3")
+node_b = NodePath("../Rope-Segemnt4")
+
+[node name="PinJoint2D5" type="PinJoint2D" parent="." unique_id=766747919]
+position = Vector2(0, 192)
+node_a = NodePath("../Rope-Segemnt4")
+node_b = NodePath("../Rope-Segemnt5")
+
+[node name="PinJoint2D6" type="PinJoint2D" parent="." unique_id=1829254986]
+position = Vector2(0, 232)
+node_a = NodePath("../Rope-Segemnt5")
+node_b = NodePath("../Rope-Segemnt6")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

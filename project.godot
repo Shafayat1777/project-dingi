@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Dingi"
-run/main_scene="uid://bk1gat81w1yj8"
+run/main_scene="uid://dv4ewfvf7ypfv"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

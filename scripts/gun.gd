@@ -1,6 +1,7 @@
 extends Node2D
 
 const BULLET = preload("res://scenes/buttet_2.tscn")
+const HAND_ROPE = preload("res://scenes/hand_rope.tscn")
 @onready var muzzle: Marker2D = $Marker2D
 
 func _process(delta: float) -> void:
@@ -13,7 +14,7 @@ func _process(delta: float) -> void:
 		scale.y = 4
 	
 	if Input.is_action_just_pressed("shoot"):
-		var bullet_instance = BULLET.instantiate()
+		var bullet_instance = HAND_ROPE.instantiate()
 		get_tree().root.add_child(bullet_instance)
 		bullet_instance.global_position = muzzle.global_position
 		bullet_instance.rotation = rotation
