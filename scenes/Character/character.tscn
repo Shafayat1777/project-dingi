@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://ekgtxq17mo4u" path="res://scripts/character_movement.gd" id="1_yenhn"]
 [ext_resource type="Texture2D" uid="uid://cm2u38hkmgcfa" path="res://assets/character/RUN.png" id="3_fqfur"]
 [ext_resource type="Texture2D" uid="uid://bmo7mosbxtdfy" path="res://assets/character/ATTACK 1.png" id="3_fsvua"]
+[ext_resource type="PackedScene" uid="uid://5wipwqvwd6kx" path="res://scenes/Character/trajectory.tscn" id="5_6xo28"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b85if"]
 radius = 30.0
@@ -217,6 +218,8 @@ animations = [{
 }]
 
 [node name="Character" type="CharacterBody2D" unique_id=376624278]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_yenhn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1778992500]
@@ -228,3 +231,5 @@ position = Vector2(-2, -33)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_6f4wy")
 autoplay = "default"
+
+[node name="Trajectory" parent="." unique_id=2144881746 instance=ExtResource("5_6xo28")]

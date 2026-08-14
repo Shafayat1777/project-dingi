@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://5wipwqvwd6kx"]
+
+[ext_resource type="Script" uid="uid://u533edynsrqj" path="res://scripts/character/trajectory.gd" id="1_02x5l"]
+[ext_resource type="Texture2D" uid="uid://cm17mgiwk47ul" path="res://assets/Yellow Effect Bullet Impact Explosion 32x32.png" id="2_770pw"]
+
+[sub_resource type="Gradient" id="Gradient_08r2w"]
+colors = PackedColorArray(1, 0, 0, 1, 0, 0.99215686, 0.39607844, 1)
+
+[node name="Trajectory" type="Node2D" unique_id=2144881746]
+script = ExtResource("1_02x5l")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1982579620]
+position = Vector2(28, 0)
+texture = ExtResource("2_770pw")
+region_enabled = true
+region_rect = Rect2(520, 424, 16, 16)
+
+[node name="Marker2D" type="Marker2D" parent="." unique_id=1086952633]
+position = Vector2(28, 0)
+
+[node name="Line2D" type="Line2D" parent="." unique_id=1694604824]
+gradient = SubResource("Gradient_08r2w")
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
