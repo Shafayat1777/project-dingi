@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cl7ipnyk4pgfl"]
+
+[ext_resource type="Script" uid="uid://cjm6nkewp2y05" path="res://scripts/Throwable/hook.gd" id="1_285ym"]
+[ext_resource type="Texture2D" uid="uid://bmo567k4t0hkx" path="res://assets/items/rope_and_hook.png" id="1_la8lu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0j2ys"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6f4wy"]
+atlas = ExtResource("1_la8lu")
+region = Rect2(0, 0, 16, 32)
+
+[node name="Hook" type="RigidBody2D" unique_id=1086728778]
+collision_layer = 4
+collision_mask = 5
+mass = 1000.0
+script = ExtResource("1_285ym")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=542077274]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_0j2ys")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=940219448]
+texture = SubResource("AtlasTexture_6f4wy")

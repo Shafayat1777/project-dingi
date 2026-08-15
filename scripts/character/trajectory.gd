@@ -1,6 +1,6 @@
 extends Node2D
 
-const GRENADE = preload("res://scenes/Throwable/grenade.tscn")
+const HOOKROPE = preload("res://scenes/Throwable/hook_rope.tscn")
 
 @onready var marker_2d: Marker2D = $Marker2D
 @onready var line_2d: Line2D = $Line2D
@@ -45,8 +45,9 @@ func update_trajectory(delta: float) -> void:
 
 
 func throw_grenade() -> void:
-	var grenade_instance = GRENADE.instantiate()
-	get_tree().root.add_child(grenade_instance)
-	grenade_instance.global_position = global_position
-	grenade_instance.launch(rotation, initial_velocity)
-	
+	var hook_rope_instance = HOOKROPE.instantiate()
+	get_tree().root.add_child(hook_rope_instance)
+	hook_rope_instance.global_position = global_position
+	#hook_rope_instance.launch(rotation, initial_velocity)
+	var hook = hook_rope_instance.get_node("Hook")
+	hook.launch(rotation, initial_velocity)
