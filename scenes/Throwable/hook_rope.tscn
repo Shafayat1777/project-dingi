@@ -15,7 +15,6 @@ node_b = NodePath("../Rope-Piece")
 
 [node name="Rope-Piece" parent="." unique_id=1571786064 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 15)
-gravity_scale = 0.0
 
 [node name="PinJoint2D2" type="PinJoint2D" parent="." unique_id=2034582712]
 position = Vector2(0, 21)
@@ -25,7 +24,6 @@ node_b = NodePath("../Rope-Piece2")
 
 [node name="Rope-Piece2" parent="." unique_id=1858939489 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 27)
-gravity_scale = 0.0
 
 [node name="PinJoint2D3" type="PinJoint2D" parent="." unique_id=1742832686]
 position = Vector2(0, 33)
@@ -35,7 +33,6 @@ node_b = NodePath("../Rope-Piece3")
 
 [node name="Rope-Piece3" parent="." unique_id=1070041093 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 39)
-gravity_scale = 0.0
 
 [node name="PinJoint2D4" type="PinJoint2D" parent="." unique_id=1066554993]
 position = Vector2(0, 45)
@@ -45,4 +42,3 @@ node_b = NodePath("../Rope-Piece4")
 
 [node name="Rope-Piece4" parent="." unique_id=818335821 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 51)
-gravity_scale = 0.0
