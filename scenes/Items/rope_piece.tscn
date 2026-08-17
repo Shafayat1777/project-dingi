@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cibegcb7r81iy"]
 
-[ext_resource type="Texture2D" uid="uid://bmo567k4t0hkx" path="res://assets/items/rope_and_hook.png" id="1_cq6hq"]
+[ext_resource type="Texture2D" uid="uid://cibdl2wkv15" path="res://assets/items/rope_and_hook.png" id="1_cq6hq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6f4wy"]
 radius = 2.0
@@ -12,7 +12,7 @@ region = Rect2(16, 0, 16, 16)
 
 [node name="Rope-Piece" type="RigidBody2D" unique_id=1571786064]
 collision_layer = 4
-collision_mask = 4
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601870248]
 shape = SubResource("CapsuleShape2D_6f4wy")

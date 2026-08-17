@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://b5u8u5ihlt2vw"]
+
+[ext_resource type="Script" uid="uid://bsr61e5jah58v" path="res://scripts/Throwable/hook_rope.gd" id="1_vopi5"]
+[ext_resource type="PackedScene" uid="uid://cl7ipnyk4pgfl" path="res://scenes/Throwable/hook.tscn" id="2_qrph4"]
+
+[node name="Hook-Rope" type="Node2D" unique_id=2129572667]
+script = ExtResource("1_vopi5")
+
+[node name="Hook" parent="." unique_id=1086728778 instance=ExtResource("2_qrph4")]

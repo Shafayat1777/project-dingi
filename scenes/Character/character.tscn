@@ -233,3 +233,7 @@ sprite_frames = SubResource("SpriteFrames_6f4wy")
 autoplay = "default"
 
 [node name="Trajectory" parent="." unique_id=2144881746 instance=ExtResource("5_6xo28")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1323451590]
+position = Vector2(4, -86)
+zoom = Vector2(1.5, 1.5)

@@ -15,6 +15,7 @@ node_b = NodePath("../Rope-Piece")
 
 [node name="Rope-Piece" parent="." unique_id=1571786064 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 15)
+mass = 0.4
 
 [node name="PinJoint2D2" type="PinJoint2D" parent="." unique_id=2034582712]
 position = Vector2(0, 21)
@@ -24,6 +25,7 @@ node_b = NodePath("../Rope-Piece2")
 
 [node name="Rope-Piece2" parent="." unique_id=1858939489 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 27)
+mass = 0.3
 
 [node name="PinJoint2D3" type="PinJoint2D" parent="." unique_id=1742832686]
 position = Vector2(0, 33)
@@ -33,6 +35,7 @@ node_b = NodePath("../Rope-Piece3")
 
 [node name="Rope-Piece3" parent="." unique_id=1070041093 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 39)
+mass = 0.3
 
 [node name="PinJoint2D4" type="PinJoint2D" parent="." unique_id=1066554993]
 position = Vector2(0, 45)
@@ -42,3 +45,34 @@ node_b = NodePath("../Rope-Piece4")
 
 [node name="Rope-Piece4" parent="." unique_id=818335821 instance=ExtResource("2_3wfgk")]
 position = Vector2(0, 51)
+mass = 0.2
+
+[node name="PinJoint2D5" type="PinJoint2D" parent="." unique_id=1279522120]
+position = Vector2(0, 58)
+rotation = -0.004935205
+node_a = NodePath("../Rope-Piece4")
+node_b = NodePath("../Rope-Piece5")
+
+[node name="Rope-Piece5" parent="." unique_id=405564275 instance=ExtResource("2_3wfgk")]
+position = Vector2(0, 64)
+mass = 0.2
+
+[node name="PinJoint2D6" type="PinJoint2D" parent="." unique_id=5395957]
+position = Vector2(0, 71)
+rotation = -0.004935205
+node_a = NodePath("../Rope-Piece5")
+node_b = NodePath("../Rope-Piece6")
+
+[node name="Rope-Piece6" parent="." unique_id=9206528 instance=ExtResource("2_3wfgk")]
+position = Vector2(0, 77)
+mass = 0.1
+
+[node name="PinJoint2D7" type="PinJoint2D" parent="." unique_id=176574828]
+position = Vector2(0, 84)
+rotation = -0.004935205
+node_a = NodePath("../Rope-Piece6")
+node_b = NodePath("../Rope-Piece7")
+
+[node name="Rope-Piece7" parent="." unique_id=1312745534 instance=ExtResource("2_3wfgk")]
+position = Vector2(0, 90)
+mass = 0.1

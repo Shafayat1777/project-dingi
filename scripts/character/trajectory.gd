@@ -1,6 +1,6 @@
 extends Node2D
 
-const HOOKROPE = preload("res://scenes/Throwable/hook_rope.tscn")
+const HOOKROPE = preload("res://scenes/Throwable/hook_rope_2.tscn")
 
 @onready var marker_2d: Marker2D = $Marker2D
 @onready var line_2d: Line2D = $Line2D
