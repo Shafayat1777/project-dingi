@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://m6d5ugkostkw"]
+
+[ext_resource type="Texture2D" uid="uid://hcoy34knh1nk" path="res://assets/tileset/Tiles.png" id="1_iq66d"]
+[ext_resource type="Script" uid="uid://rbfvudw4t4yy" path="res://scripts/pickup-able.gd" id="1_w0jts"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_08r2w"]
+atlas = ExtResource("1_iq66d")
+region = Rect2(160, 296, 32, 56)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(26.5, 52.5)
+
+[node name="Debris" type="RigidBody2D" unique_id=1187859604]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_w0jts")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1751080509]
+rotation = -1.5707964
+texture = SubResource("AtlasTexture_08r2w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=216633008]
+position = Vector2(0.75, 0.24999997)
+rotation = -1.5707964
+shape = SubResource("RectangleShape2D_6f4wy")

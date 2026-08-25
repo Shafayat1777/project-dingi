@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cm2u38hkmgcfa" path="res://assets/character/RUN.png" id="3_fqfur"]
 [ext_resource type="Texture2D" uid="uid://bmo7mosbxtdfy" path="res://assets/character/ATTACK 1.png" id="3_fsvua"]
 [ext_resource type="PackedScene" uid="uid://5wipwqvwd6kx" path="res://scenes/Character/trajectory.tscn" id="5_6xo28"]
+[ext_resource type="Script" uid="uid://bcfvrkdtmres1" path="res://scripts/character/HeldItemUI.gd" id="6_myntp"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b85if"]
 radius = 30.0
@@ -217,6 +218,11 @@ animations = [{
 "speed": 20.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(55, 66)
+
+[sub_resource type="LabelSettings" id="LabelSettings_myntp"]
+
 [node name="Character" type="CharacterBody2D" unique_id=376624278]
 collision_layer = 2
 collision_mask = 3
@@ -237,3 +243,22 @@ autoplay = "default"
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1323451590]
 position = Vector2(4, -86)
 zoom = Vector2(1.5, 1.5)
+
+[node name="GrabArea" type="Area2D" parent="." unique_id=428178185]
+position = Vector2(28, 0)
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrabArea" unique_id=1330231004]
+shape = SubResource("RectangleShape2D_6f4wy")
+debug_color = Color(0.90588236, 0.3019608, 0.03529412, 0.41960785)
+
+[node name="Label" type="Label" parent="." unique_id=256744129]
+offset_left = -17.0
+offset_top = -63.0
+offset_right = 23.0
+offset_bottom = -40.0
+label_settings = SubResource("LabelSettings_myntp")
+script = ExtResource("6_myntp")
+
+[connection signal="body_entered" from="GrabArea" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="GrabArea" to="." method="_on_area_2d_body_exited"]
