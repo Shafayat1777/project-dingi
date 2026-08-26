@@ -42,5 +42,5 @@ func _ready() -> void:
 			joint.node_a = segments[i - 1].get_path()
 			joint.node_b = segments[i].get_path()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://x7qdfakce8m0"]
 
 [ext_resource type="Texture2D" uid="uid://ds6xc7px0e4t" path="res://assets/character/IDLE.png" id="1_oakiv"]
-[ext_resource type="Script" uid="uid://ekgtxq17mo4u" path="res://scripts/character/character_movement.gd" id="1_yenhn"]
+[ext_resource type="Script" uid="uid://ekgtxq17mo4u" path="res://scripts/character_movement.gd" id="1_yenhn"]
 [ext_resource type="Texture2D" uid="uid://cm2u38hkmgcfa" path="res://assets/character/RUN.png" id="3_fqfur"]
 [ext_resource type="Texture2D" uid="uid://bmo7mosbxtdfy" path="res://assets/character/ATTACK 1.png" id="3_fsvua"]
 [ext_resource type="PackedScene" uid="uid://5wipwqvwd6kx" path="res://scenes/Character/trajectory.tscn" id="5_6xo28"]
@@ -259,9 +259,6 @@ offset_right = 23.0
 offset_bottom = -40.0
 label_settings = SubResource("LabelSettings_myntp")
 script = ExtResource("6_myntp")
-
-[node name="Pickable-Position" type="Marker2D" parent="." unique_id=1815041864]
-position = Vector2(-1, -52)
 
 [connection signal="body_entered" from="GrabArea" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="GrabArea" to="." method="_on_area_2d_body_exited"]

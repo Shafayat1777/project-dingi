@@ -505,3 +505,6 @@ position = Vector2(672, 427)
 
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_k7eyg")]
 position = Vector2(371, 422)
+
+[node name="Debris2" parent="." unique_id=2047754729 instance=ExtResource("4_k7eyg")]
+position = Vector2(127, 359)

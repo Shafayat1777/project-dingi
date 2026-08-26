@@ -9,7 +9,7 @@ func launch(direction_rotation: float, velocity: Vector2) -> void:
 	linear_velocity = velocity.rotated(direction_rotation)
 	update_sprite_rotation(direction_rotation)
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if linear_velocity.length() > VELOCITY_THRESHOLD:
 		update_sprite_rotation(linear_velocity.angle())
 

@@ -1,6 +1,5 @@
-extends Label
-
 # HeldItemUI.gd (attached to a Label node in your UI scene)
+extends Label
 
 func _ready():
 	# "Whenever HeldItemManager emits item_picked_up, call my function"
@@ -8,8 +7,9 @@ func _ready():
 	HeldItemManager.item_thrown.connect(_on_item_thrown)
 
 func _on_item_picked_up(item):
-	text = "Holding: " + item.name
-	show()
+	if item.input_pickable:
+		text = "Pick up " + item.name
+		show()
 
-func _on_item_thrown(item):
+func _on_item_thrown(_item):
 	hide()

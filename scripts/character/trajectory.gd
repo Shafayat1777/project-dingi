@@ -1,6 +1,6 @@
 extends Node2D
 
-const HOOKROPE = preload("res://scenes/Throwable/hook_rope_2.tscn")
+const HOOKROPE = preload("res://scenes/Throwable/hook_rope_generation.tscn")
 
 @onready var marker_2d: Marker2D = $Marker2D
 @onready var line_2d: Line2D = $Line2D
@@ -26,7 +26,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_released("aim"):
 		line_2d.hide()
 
-func update_trajectory(delta: float) -> void:
+func update_trajectory(_delta: float) -> void:
 	line_2d.clear_points()
 	
 	var start_pos = global_position
