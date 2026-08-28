@@ -9,7 +9,6 @@ const ACCELERATION = 1000.0
 const FRICTION = 1000.0
 const JUMP_VELOCITY = -400.0
 var push_force = 60.0
-var is_grabbed: bool = false
 var facing_direction: float = 1.0
 
 func _physics_process(delta: float) -> void:
@@ -55,26 +54,30 @@ func _physics_process(delta: float) -> void:
 		
 	debris_pick_up()
 	debris_drop()
+	debris_throw()
 
-		
+	
 func debris_pick_up() -> void:
-	if Input.is_action_just_pressed("pickup") and is_grabbed == false:
+	if Input.is_action_just_pressed("pickup") and HeldItemManager.is_held == false:
 		if HeldItemManager.held_item is RigidBody2D and HeldItemManager.held_item.input_pickable:
 			HeldItemManager.hold(HeldItemManager.held_item, pickable_position)
-			is_grabbed = true
 	
-	if HeldItemManager.held_item is RigidBody2D and is_grabbed:
+	if HeldItemManager.held_item is RigidBody2D and HeldItemManager.is_held:
 		HeldItemManager.held_item.global_position  = Vector2(global_position.x, global_position.y - 50)
 
 func debris_drop() -> void:
-	if Input.is_action_just_pressed("drop") and is_grabbed:
-		is_grabbed = false
+	if Input.is_action_just_pressed("drop") and HeldItemManager.is_held:
 		HeldItemManager.drop(HeldItemManager.held_item, facing_direction)
+
+func debris_throw() -> void:
+	if Input.is_action_just_pressed("shoot") and HeldItemManager.is_held:
+		HeldItemManager.throw(HeldItemManager.held_item, facing_direction)
+
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D and body.input_pickable:
 		HeldItemManager.show_label(body)
 
 func _on_area_2d_body_exited(body: Node2D) -> void:
-	if body is RigidBody2D and is_grabbed == false:
+	if body is RigidBody2D and HeldItemManager.is_held == false:
 		HeldItemManager.hide_label(body)

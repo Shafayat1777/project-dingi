@@ -4,7 +4,9 @@ extends Node
 signal item_picked_up(item)
 signal item_thrown(item)
 
+var is_held: bool = false
 var held_item: RigidBody2D = null
+var throw_force: float = 800
 
 func show_label(item: RigidBody2D) -> void:
 	held_item = item
@@ -16,6 +18,8 @@ func hide_label(item: RigidBody2D) -> void:
 	
 func hold(item: RigidBody2D, pickable_position:Marker2D) -> void:
 	held_item = item
+	is_held = true
+	
 	item.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC   # HOW it behaves while frozen
 	item.freeze = true                                      # actually freeze it
 	
@@ -28,6 +32,7 @@ func hold(item: RigidBody2D, pickable_position:Marker2D) -> void:
 
 func drop(item: RigidBody2D, facing_direction:float) -> void:
 	held_item = null
+	is_held = false
 	
 	var world = item.get_tree().current_scene
 	var drop_pos = item.global_position
@@ -39,4 +44,24 @@ func drop(item: RigidBody2D, facing_direction:float) -> void:
 	item.freeze = false         # resume physics simulation
 	item.sleeping = false       # force it awake in case it fell asleep
 	item.linear_velocity = Vector2(200.0 * facing_direction, -150.0)   # optional: clear any leftover velocity
+	item_thrown.emit(item)
+
+func throw(item: RigidBody2D, facing_direction:float) -> void:
+	held_item = null
+	is_held = false
+
+	var world = item.get_tree().current_scene
+	var drop_pos = item.global_position
+	
+	item.get_parent().remove_child(item)
+	world.add_child(item)
+	item.global_position = drop_pos
+	
+	item.freeze = false         # resume physics simulation
+	item.sleeping = false       # force it awake in case it fell asleep
+	
+	var mouse_pos = item.get_global_mouse_position()
+	var throw_direction = (mouse_pos - drop_pos).normalized()
+	item.linear_velocity = throw_direction * throw_force
+	
 	item_thrown.emit(item)

@@ -22,7 +22,8 @@ func _process(delta: float) -> void:
 		line_2d.show()
 		update_trajectory(delta)
 		if Input.is_action_just_pressed("shoot"):
-			throw_grenade()
+			if HeldItemManager.is_held == false:
+				throw_grenade()
 	if Input.is_action_just_released("aim"):
 		line_2d.hide()
 
@@ -48,6 +49,5 @@ func throw_grenade() -> void:
 	var hook_rope_instance = HOOKROPE.instantiate()
 	get_tree().root.add_child(hook_rope_instance)
 	hook_rope_instance.global_position = global_position
-	#hook_rope_instance.launch(rotation, initial_velocity)
 	var hook = hook_rope_instance.get_node("Hook")
 	hook.launch(rotation, initial_velocity)
