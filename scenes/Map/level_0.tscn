@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://x5fxv3eedbrk" path="res://scenes/Map/background.tscn" id="1_c5eyr"]
 [ext_resource type="Texture2D" uid="uid://hcoy34knh1nk" path="res://assets/tileset/Tiles.png" id="2_b85if"]
 [ext_resource type="PackedScene" uid="uid://x7qdfakce8m0" path="res://scenes/Character/character.tscn" id="3_b85if"]
-[ext_resource type="PackedScene" uid="uid://m6d5ugkostkw" path="res://scenes/Items/debris.tscn" id="4_k7eyg"]
+[ext_resource type="PackedScene" uid="uid://m6d5ugkostkw" path="res://scenes/Throwable/debris.tscn" id="4_k7eyg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7eyg"]
 texture = ExtResource("2_b85if")
@@ -504,7 +504,8 @@ tile_set = SubResource("TileSet_ie1yj")
 position = Vector2(672, 427)
 
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_k7eyg")]
-position = Vector2(371, 422)
+position = Vector2(448, 430.00003)
+rotation = -1.5934856
 
 [node name="Debris2" parent="." unique_id=2047754729 instance=ExtResource("4_k7eyg")]
 position = Vector2(127, 359)

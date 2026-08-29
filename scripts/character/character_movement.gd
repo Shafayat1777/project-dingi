@@ -75,7 +75,7 @@ func debris_throw() -> void:
 
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
-	if body is RigidBody2D and body.input_pickable:
+	if body is RigidBody2D and body.input_pickable and HeldItemManager.is_held == false:
 		HeldItemManager.show_label(body)
 
 func _on_area_2d_body_exited(body: Node2D) -> void:

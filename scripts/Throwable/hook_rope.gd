@@ -41,6 +41,3 @@ func _ready() -> void:
 			joint.position = segments[i - 1].position + Vector2(0, segment_spacing / 2)
 			joint.node_a = segments[i - 1].get_path()
 			joint.node_b = segments[i].get_path()
-
-func _process(_delta: float) -> void:
-	pass

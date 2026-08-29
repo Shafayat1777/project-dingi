@@ -11,7 +11,7 @@ size = Vector2(26.5, 52.5)
 
 [node name="Debris" type="RigidBody2D" unique_id=1187859604]
 collision_layer = 4
-collision_mask = 3
+collision_mask = 7
 input_pickable = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1751080509]

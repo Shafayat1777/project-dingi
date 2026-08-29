@@ -10,6 +10,9 @@ size = Vector2(16, 21)
 atlas = ExtResource("1_la8lu")
 region = Rect2(0, 0, 16, 32)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(16, 21)
+
 [node name="Hook" type="RigidBody2D" unique_id=1086728778]
 collision_layer = 8
 mass = 1000.0
@@ -21,3 +24,14 @@ shape = SubResource("RectangleShape2D_0j2ys")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=940219448]
 texture = SubResource("AtlasTexture_6f4wy")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1001024735]
+collision_layer = 8
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=61478501]
+position = Vector2(0, -4.5)
+shape = SubResource("RectangleShape2D_6f4wy")
+debug_color = Color(0.87604964, 0.340272, 0.13306433, 0.41960785)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

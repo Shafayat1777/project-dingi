@@ -225,7 +225,7 @@ size = Vector2(62, 104)
 
 [node name="Character" type="CharacterBody2D" unique_id=376624278]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 7
 script = ExtResource("1_yenhn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1778992500]

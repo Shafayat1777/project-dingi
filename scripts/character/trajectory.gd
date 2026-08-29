@@ -2,7 +2,6 @@ extends Node2D
 
 const HOOKROPE = preload("res://scenes/Throwable/hook_rope_generation.tscn")
 
-@onready var marker_2d: Marker2D = $Marker2D
 @onready var line_2d: Line2D = $Line2D
 
 @export var initial_velocity: Vector2 = Vector2(800, 0) # y = -600
@@ -23,7 +22,7 @@ func _process(delta: float) -> void:
 		update_trajectory(delta)
 		if Input.is_action_just_pressed("shoot"):
 			if HeldItemManager.is_held == false:
-				throw_grenade()
+				throw()
 	if Input.is_action_just_released("aim"):
 		line_2d.hide()
 
@@ -37,15 +36,9 @@ func update_trajectory(_delta: float) -> void:
 		var t = i * TIME_STEP
 		var point = start_pos + velocity * t + 0.5 * Vector2(0, gravity) * t * t
 		line_2d.add_point(to_local(point))
-		
-	#var pos = to_local(global_position)
-
-	#for i in MAX_POINTS:
-		#line_2d.add_point(pos)
-		#pos.x += 10
 
 
-func throw_grenade() -> void:
+func throw() -> void:
 	var hook_rope_instance = HOOKROPE.instantiate()
 	get_tree().root.add_child(hook_rope_instance)
 	hook_rope_instance.global_position = global_position
