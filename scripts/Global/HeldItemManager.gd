@@ -13,74 +13,74 @@ var held_item_layer: int = 0
 var held_item_mask: int = 0
 
 func show_label(item: RigidBody2D) -> void:
-	held_item = item
-	near_item = item
-	item_picked_up.emit(item) 
+	if item.input_pickable and held_item == null:
+		near_item = item
+		item_picked_up.emit(item) 
 	
 func hide_label(item: RigidBody2D) -> void:
-	held_item = null
 	near_item = null
 	item_thrown.emit(item)
 	
-func hold(item: RigidBody2D, pickable_position:Marker2D) -> void:
-	held_item = item
-	is_held = true
+func hold(pickable_position:Marker2D) -> void:
+	if near_item:
+		held_item = near_item
+		is_held = true
 	
-	item.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC   # HOW it behaves while frozen
-	item.freeze = true                                      # actually freeze it
-	
-	var prev_parent = item.get_parent()
-	prev_parent.remove_child(item)
-	pickable_position.add_child(item)
-	
-	item.position = Vector2.ZERO
-	item.rotation = 0.0
-	
-	held_item_layer = item.collision_layer
-	held_item_mask = item.collision_mask
-	item.collision_layer = 0
-	item.collision_mask = 0
-	
-	item_picked_up.emit(item)
+		held_item.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC   
+		held_item.freeze = true                                 
+		print(held_item)
+		var prev_parent = held_item.get_parent()
+		prev_parent.remove_child(held_item)
+		print(held_item)
+		pickable_position.add_child(held_item)
+		
+		held_item.position = Vector2.ZERO
+		held_item.rotation = 0.0
+		
+		held_item_layer = held_item.collision_layer
+		held_item_mask = held_item.collision_mask
+		held_item.collision_layer = 0
+		held_item.collision_mask = 0
+		
+		item_picked_up.emit(held_item)
 
-func drop(item: RigidBody2D, facing_direction:float) -> void:
+func drop(facing_direction:float) -> void:
+	var world = held_item.get_tree().current_scene
+	var drop_pos = held_item.global_position
+	
+	held_item.get_parent().remove_child(held_item)
+	world.add_child(held_item)
+	held_item.global_position = drop_pos
+	
+	held_item.collision_layer = held_item_layer
+	held_item.collision_mask = held_item_mask
+	
+	held_item.freeze = false         # resume physics simulation
+	held_item.sleeping = false       # force it awake in case it fell asleep
+	held_item.linear_velocity = Vector2(200.0 * facing_direction, -150.0)   # optional: clear any leftover velocity
+	item_thrown.emit(held_item)
+	
 	held_item = null
 	is_held = false
-	
-	var world = item.get_tree().current_scene
-	var drop_pos = item.global_position
-	
-	item.get_parent().remove_child(item)
-	world.add_child(item)
-	item.global_position = drop_pos
-	
-	item.collision_layer = held_item_layer
-	item.collision_mask = held_item_mask
-	
-	item.freeze = false         # resume physics simulation
-	item.sleeping = false       # force it awake in case it fell asleep
-	item.linear_velocity = Vector2(200.0 * facing_direction, -150.0)   # optional: clear any leftover velocity
-	item_thrown.emit(item)
 
-func throw(item: RigidBody2D, facing_direction:float) -> void:
-	held_item = null
-	is_held = false
-
-	var world = item.get_tree().current_scene
-	var drop_pos = item.global_position
+func throw(facing_direction:float) -> void:
+	var world = held_item.get_tree().current_scene
+	var drop_pos = held_item.global_position
 	
-	item.get_parent().remove_child(item)
-	world.add_child(item)
-	item.global_position = drop_pos
+	held_item.get_parent().remove_child(held_item)
+	world.add_child(held_item)
+	held_item.global_position = drop_pos
 	
-	item.freeze = false         # resume physics simulation
-	item.sleeping = false       # force it awake in case it fell asleep
+	held_item.freeze = false         # resume physics simulation
+	held_item.sleeping = false       # force it awake in case it fell asleep
 	
-	item.collision_layer = held_item_layer
-	item.collision_mask = held_item_mask
+	held_item.collision_layer = held_item_layer
+	held_item.collision_mask = held_item_mask
 	
-	var mouse_pos = item.get_global_mouse_position()
+	var mouse_pos = held_item.get_global_mouse_position()
 	var throw_direction = (mouse_pos - drop_pos).normalized()
-	item.linear_velocity = throw_direction * throw_force
+	held_item.linear_velocity = throw_direction * throw_force
 	
-	item_thrown.emit(item)
+	item_thrown.emit(held_item)
+	held_item = null
+	is_held = false
