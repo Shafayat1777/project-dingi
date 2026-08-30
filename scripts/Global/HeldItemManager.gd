@@ -28,10 +28,8 @@ func hold(pickable_position:Marker2D) -> void:
 	
 		held_item.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC   
 		held_item.freeze = true                                 
-		print(held_item)
 		var prev_parent = held_item.get_parent()
 		prev_parent.remove_child(held_item)
-		print(held_item)
 		pickable_position.add_child(held_item)
 		
 		held_item.position = Vector2.ZERO
