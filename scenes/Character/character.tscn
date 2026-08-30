@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://5wipwqvwd6kx" path="res://scenes/Character/trajectory.tscn" id="5_6xo28"]
 [ext_resource type="Script" uid="uid://dn0da4e80iqyp" path="res://scripts/character/grab_area.gd" id="6_8idae"]
 [ext_resource type="Script" uid="uid://bcfvrkdtmres1" path="res://scripts/character/HeldItemUI.gd" id="6_myntp"]
+[ext_resource type="PackedScene" uid="uid://1ltmwanatlap" path="res://scenes/Throwable/line_hook.tscn" id="8_5lfdo"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b85if"]
 radius = 30.0
@@ -271,6 +272,9 @@ script = ExtResource("6_myntp")
 
 [node name="Pickable-Position" type="Marker2D" parent="." unique_id=1815041864]
 position = Vector2(-1, -52)
+
+[node name="Line-Hook" parent="." unique_id=118512847 node_paths=PackedStringArray("player") instance=ExtResource("8_5lfdo")]
+player = NodePath("..")
 
 [connection signal="body_entered" from="GrabArea" to="GrabArea" method="_on_body_entered"]
 [connection signal="body_exited" from="GrabArea" to="GrabArea" method="_on_body_exited"]

@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://1ltmwanatlap"]
+
+[ext_resource type="Texture2D" uid="uid://cibdl2wkv15" path="res://assets/items/rope_and_hook.png" id="1_hxp0v"]
+[ext_resource type="Script" uid="uid://5855w42sqjx1" path="res://scripts/Throwable/line_hook.gd" id="1_k36id"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0u4sf"]
+atlas = ExtResource("1_hxp0v")
+region = Rect2(0, 1, 16, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0u4sf"]
+size = Vector2(16, 30)
+
+[node name="Line-Hook" type="RigidBody2D" unique_id=118512847]
+collision_layer = 8
+collision_mask = 5
+script = ExtResource("1_k36id")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=730607294]
+texture = SubResource("AtlasTexture_0u4sf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=229557611]
+shape = SubResource("RectangleShape2D_0u4sf")
+
+[node name="Line2D" type="Line2D" parent="." unique_id=925682593]
+width = 3.0
+default_color = Color(0.6313726, 0.41960785, 0.24705882, 1)
