@@ -274,6 +274,7 @@ script = ExtResource("6_myntp")
 position = Vector2(-1, -52)
 
 [node name="Line-Hook" parent="." unique_id=118512847 node_paths=PackedStringArray("player") instance=ExtResource("8_5lfdo")]
+max_range = 200.0
 player = NodePath("..")
 
 [connection signal="body_entered" from="GrabArea" to="GrabArea" method="_on_body_entered"]

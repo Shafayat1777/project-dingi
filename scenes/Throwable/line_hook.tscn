@@ -7,8 +7,8 @@
 atlas = ExtResource("1_hxp0v")
 region = Rect2(0, 1, 16, 30)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0u4sf"]
-size = Vector2(16, 30)
+[sub_resource type="CircleShape2D" id="CircleShape2D_tfdxj"]
+radius = 5.0
 
 [node name="Line-Hook" type="RigidBody2D" unique_id=118512847]
 collision_layer = 8
@@ -19,7 +19,8 @@ script = ExtResource("1_k36id")
 texture = SubResource("AtlasTexture_0u4sf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=229557611]
-shape = SubResource("RectangleShape2D_0u4sf")
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_tfdxj")
 
 [node name="Line2D" type="Line2D" parent="." unique_id=925682593]
 width = 3.0
