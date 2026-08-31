@@ -86,7 +86,10 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	
 	# we multiply the velocity of the body by the motion factor
 	#if we didn't the speed would be huge, depending on the use case
-	#if body is RigidBody2D:
-	var speed = body.linear_velocity.y * motion_factor
-	emit_signal("splash", index, speed)
+	if body is RigidBody2D:
+		var speed = body.linear_velocity.y * motion_factor
+		emit_signal("splash", index, speed)
+	if body is CharacterBody2D:
+		var speed = body.velocity.y * motion_factor
+		emit_signal("splash", index, speed)
 	#pass # Replace with function body.
