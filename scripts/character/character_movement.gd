@@ -21,7 +21,8 @@ func _physics_process(delta: float) -> void:
 	# Get the input direction and handle the movement/deceleration.
 	var direction := Input.get_axis("left", "right")
 
-	# Handle jump.
+	# Handle jump on the ground. Swing-jumps are triggered directly by
+	# the hook script (see line_hook.gd _input), not here.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 

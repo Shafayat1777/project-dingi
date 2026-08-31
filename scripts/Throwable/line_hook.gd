@@ -49,12 +49,22 @@ func _input(event):
 		if state == State.IDLE and HeldItemManager.is_held == false:
 			throw()
 		elif state == State.FLYING or state == State.STUCK:
-			state = State.RECALLING
-			stuck_body = null
-			player.is_swinging = false
-			freeze = false
-			set_deferred("collision_layer", 0)
-			set_deferred("collision_mask", 0)
+			recall()
+
+	# jump while swinging: give the jump impulse first (while we still know
+	# is_swinging was true), then recall — otherwise recall() clears the flag
+	# before the player's own _physics_process ever sees it was true
+	if event.is_action_pressed("jump") and player.is_swinging:
+		player.velocity.y = player.JUMP_VELOCITY
+		recall()
+
+func recall():
+	state = State.RECALLING
+	stuck_body = null
+	player.is_swinging = false
+	freeze = false
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
 
 func throw():
 	show()
