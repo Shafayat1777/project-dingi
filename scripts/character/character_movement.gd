@@ -9,6 +9,10 @@ const FRICTION = 1000.0
 const JUMP_VELOCITY = -400.0
 var push_force = 60.0
 
+@export var swing_push_force := 600.0
+
+var is_swinging := false
+
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():
@@ -21,10 +25,14 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
-	if direction != 0:
-		velocity.x = move_toward(velocity.x, direction * SPEED, ACCELERATION * delta)
+	if is_swinging:
+		if direction != 0:
+			velocity.x += direction * swing_push_force * delta
 	else:
-		velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
+		if direction != 0:
+			velocity.x = move_toward(velocity.x, direction * SPEED, ACCELERATION * delta)
+		elif is_on_floor():
+			velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
 
 	# Handle animations based on state
 	if not is_on_floor():
@@ -36,7 +44,6 @@ func _physics_process(delta: float) -> void:
 		animated_sprite_2d.flip_h = direction < 0
 		animated_sprite_2d.play("running")
 		pickup_area.position.x = abs(pickup_area.position.x) * sign(direction)
-		
 	else:
 		animated_sprite_2d.play("default")
 

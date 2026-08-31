@@ -5,10 +5,9 @@ enum State { IDLE, FLYING, STUCK, RECALLING }
 @export var throw_speed := 800.0
 @export var recall_speed := 1000.0
 @export var max_range := 500.0
-@export var drag_speed := 400.0
-@export var drag_acceleration := 1000.0
-@export_flags_2d_physics var stick_to_layers := 1 + 4
-@export var player: Node2D
+@export var drag_force := 20000.0
+@export_flags_2d_physics var stick_to_layers := 1 + 4  # tick World/Objects etc. in inspector
+@export var player: CharacterBody2D  # assign the character node in inspector
 
 @onready var line: Line2D = $Line2D
 
@@ -18,10 +17,10 @@ var stuck_body: RigidBody2D = null
 func _ready():
 	top_level = true
 	line.clear_points()
-	line.add_point(Vector2.ZERO)
-	line.add_point(Vector2.ZERO)
+	line.add_point(Vector2.ZERO)  # point 0 - player side
+	line.add_point(Vector2.ZERO)  # point 1 - hook side
 	hide()
-	freeze = true
+	freeze = true  # hook stays still until thrown
 
 	collision_mask = stick_to_layers
 	contact_monitor = true
@@ -48,6 +47,7 @@ func _input(event):
 		elif state == State.FLYING or state == State.STUCK:
 			state = State.RECALLING
 			stuck_body = null
+			player.is_swinging = false
 			freeze = false
 			set_deferred("collision_layer", 0)
 			set_deferred("collision_mask", 0)
@@ -63,7 +63,7 @@ func throw():
 
 	var dir = (get_global_mouse_position() - global_position).normalized()
 	linear_velocity = dir * throw_speed
-	rotation = dir.angle()
+	rotation = dir.angle()  # optional: point sprite toward mouse
 
 func check_range():
 	if global_position.distance_to(player.global_position) >= max_range:
@@ -85,20 +85,30 @@ func constrain_rope(delta):
 	if stuck_body:
 		global_position = stuck_body.global_position
 
-	var dist = player.global_position.distance_to(global_position)
+	var to_player = player.global_position - global_position
+	var dist = to_player.length()
+
 	if dist <= max_range:
+		player.is_swinging = false
 		return
 
-	var dir = (player.global_position - global_position).normalized()
+	player.is_swinging = true
 
-	# always clamp the player so they can't walk past rope length
+	var dir = to_player.normalized()
+
+	# clamp player onto the rope-length circle
 	player.global_position = global_position + dir * max_range
 
-	# if the anchor is a movable RigidBody2D, drag it toward the player too
+	# swing physics: cancel only the outward velocity component,
+	# keep the tangential (sideways) component so gravity swings the player in an arc
+	var outward_speed = player.velocity.dot(dir)
+	if outward_speed > 0:
+		player.velocity -= dir * outward_speed
+
+	# apply_central_force respects the body's mass automatically —
+	# heavier objects accelerate slower under the same force, lighter ones faster
 	if stuck_body:
-		stuck_body.linear_velocity = stuck_body.linear_velocity.move_toward(
-			dir * drag_speed, drag_acceleration * delta
-		)
+		stuck_body.apply_central_force(dir * drag_force)
 
 func recall_hook():
 	var dir = (player.global_position - global_position).normalized()
@@ -108,10 +118,12 @@ func recall_hook():
 	if global_position.distance_to(player.global_position) < 20:
 		state = State.IDLE
 		stuck_body = null
+		player.is_swinging = false
 		freeze = true
 		linear_velocity = Vector2.ZERO
 		hide()
 
 func update_line():
+	# Point 0 = player side, Point 1 = hook side
 	line.set_point_position(0, to_local(player.global_position))
-	line.set_point_position(1, Vector2(0, 14))
+	line.set_point_position(1, Vector2(0, 14))  # hook's own origin
