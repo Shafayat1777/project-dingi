@@ -22,7 +22,7 @@ var target_height = 0
 var index = 0
 
 #how much an external object will affect this spring
-var motion_factor = 0.02
+var motion_factor = 0.009
 
 var collided_with = null
 
