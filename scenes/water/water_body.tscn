@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://p2wbsekcuhig"]
+
+[ext_resource type="Script" uid="uid://ce644ye6ovmub" path="res://scripts/Water/water_body.gd" id="1_2xw6q"]
+[ext_resource type="Script" uid="uid://noi7yr2ttlrt" path="res://scripts/Water/smooth_path_modified.gd" id="2_10kku"]
+[ext_resource type="Shader" uid="uid://bip7h6mr8f2kd" path="res://shaders/Water/water_body.gdshader" id="2_etf0t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0xm2m"]
+shader = ExtResource("2_etf0t")
+shader_parameter/top_color = Color(0.2, 0.5, 0.8, 0.5)
+shader_parameter/bottom_color = Color(0, 0.2, 0.4, 0.85)
+
+[sub_resource type="Curve2D" id="Curve2D_vddtq"]
+
+[node name="Water_Body" type="Node2D" unique_id=18857598]
+script = ExtResource("1_2xw6q")
+
+[node name="Water_Polygon" type="Polygon2D" parent="." unique_id=1352171394]
+material = SubResource("ShaderMaterial_0xm2m")
+
+[node name="Water_Border" type="Path2D" parent="." unique_id=83688874]
+curve = SubResource("Curve2D_vddtq")
+script = ExtResource("2_10kku")

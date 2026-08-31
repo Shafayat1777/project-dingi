@@ -83,6 +83,7 @@ climb_down={
 2d_physics/layer_2="player"
 2d_physics/layer_3="object"
 2d_physics/layer_4="hook"
+2d_physics/layer_5="water"
 
 [physics]
 
