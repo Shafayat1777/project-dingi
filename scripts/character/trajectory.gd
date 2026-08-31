@@ -22,7 +22,8 @@ func _process(delta: float) -> void:
 		update_trajectory(delta)
 		if Input.is_action_just_pressed("shoot"):
 			if HeldItemManager.is_held == false:
-				throw()
+				pass
+				#throw()
 	if Input.is_action_just_released("aim"):
 		line_2d.hide()
 
