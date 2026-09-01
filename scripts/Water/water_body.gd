@@ -6,12 +6,12 @@ extends Node2D
 #spread factor dictates how much the waves will spread to their neighbors
 @export var k = 0.015
 @export var d = 0.03
-@export var spread = 0.0002
+@export var spread = 0.5
 
 
 #the spring array
 var springs = []
-@export var passes = 8
+@export var passes = 3.5
 
 #distance in pixel between each spring
 @export var distance_between_springs = 32

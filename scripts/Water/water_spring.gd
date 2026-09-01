@@ -93,3 +93,9 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		var speed = body.velocity.y * motion_factor
 		emit_signal("splash", index, speed)
 	#pass # Replace with function body.
+
+
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	if body == collided_with:
+		collided_with = null
+	#pass # Replace with function body.
