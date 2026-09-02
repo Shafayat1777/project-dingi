@@ -4,25 +4,28 @@ extends Node2D
 
 #spring factor, dampening factor and spread factor
 #spread factor dictates how much the waves will spread to their neighbors
-@export var k = 0.015
-@export var d = 0.03
-@export var spread = 0.5
+@export var k = 0.010
+@export var d = 0.09
+@export var spread = 0.9
 
 
 #the spring array
 var springs = []
-@export var passes = 3.5
+@export var passes = 16
 
 #distance in pixel between each spring
 @export var distance_between_springs = 32
 #number of springs in the scene
-@export var spring_number = 6
+@export var spring_number = 12
 
 #total water body length
 var water_length = distance_between_springs * spring_number
 
 #spring scene reference
 @onready var water_spring = preload("res://scenes/water/water_spring.tscn")
+
+#water splash scene reference
+@onready var splash_particles = preload("res://scenes/water/water_splash.tscn")
 
 #the body of water depth
 @export var depth = 1000
@@ -140,5 +143,20 @@ func new_border():
 func splash(index,speed):
 	if index >= 0 and index < springs.size():
 		springs[index].velocity += speed
-	
+		spawn_splash_particles(index, speed)
 	pass
+
+
+func spawn_splash_particles(index, speed):
+	var p = splash_particles.instantiate()
+	add_child(p)
+	p.global_position = springs[index].global_position
+	
+	# scale particle intensity with impact speed
+	p.amount = clamp(int(abs(speed) * 2), 2, 5)
+	
+	p.emitting = true
+	
+	# auto-remove after particles finish
+	await get_tree().create_timer(p.lifetime + 0.1).timeout
+	p.queue_free()

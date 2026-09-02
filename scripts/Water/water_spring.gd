@@ -21,8 +21,24 @@ var target_height = 0
 #we will set it on initialize
 var index = 0
 
+#variable for objects colliding in water
+var bodies_in_water = []
+
 #how much an external object will affect this spring
-var motion_factor = 0.009
+@export var motion_factor = 0.03
+#how much an external object will affect this spring horizontally
+@export var side_factor = 0.3
+#how much and external object will affect its speed in water; lower = more resistance
+@export var water_drag = 0.97
+
+func _physics_process(delta):
+	for body in bodies_in_water:
+		if is_instance_valid(body):
+			if body is RigidBody2D:
+				body.linear_velocity *= water_drag
+			elif body is CharacterBody2D:
+				body.velocity *= water_drag
+
 
 var collided_with = null
 
@@ -82,15 +98,16 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		return
 	
 	collided_with = body
+	bodies_in_water.append(body)
 	
 	
 	# we multiply the velocity of the body by the motion factor
 	#if we didn't the speed would be huge, depending on the use case
 	if body is RigidBody2D:
-		var speed = body.linear_velocity.y * motion_factor
+		var speed = clamp((abs(body.linear_velocity.y) + abs(body.linear_velocity.x) *side_factor) * motion_factor,-5.0,10.0)
 		emit_signal("splash", index, speed)
 	if body is CharacterBody2D:
-		var speed = body.velocity.y * motion_factor
+		var speed = clamp((abs(body.velocity.y) + abs(body.velocity.x) * side_factor) * motion_factor,-5.0,3.0)
 		emit_signal("splash", index, speed)
 	#pass # Replace with function body.
 
@@ -98,4 +115,5 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 func _on_area_2d_body_exited(body: Node2D) -> void:
 	if body == collided_with:
 		collided_with = null
+		bodies_in_water.erase(body)
 	#pass # Replace with function body.
