@@ -30,6 +30,14 @@ var bodies_in_water = []
 @export var side_factor = 0.3
 #how much and external object will affect its speed in water; lower = more resistance
 @export var water_drag = 0.97
+#ripple effect while idle
+@export var idle_ripple_factor = 0.5
+#seconds between idle pulses
+@export var idle_ripple_interval = 0.4
+
+var idle_ripple_timer = 0.0
+
+
 
 func _physics_process(delta):
 	for body in bodies_in_water:
@@ -38,6 +46,13 @@ func _physics_process(delta):
 				body.linear_velocity *= water_drag
 			elif body is CharacterBody2D:
 				body.velocity *= water_drag
+
+	if bodies_in_water.size() > 0:
+		idle_ripple_timer += delta
+		if idle_ripple_timer >= idle_ripple_interval:
+			idle_ripple_timer = 0.0
+			var pulse = sin(Time.get_ticks_msec() * 0.005) * idle_ripple_factor
+			emit_signal("splash", index, pulse)
 
 
 var collided_with = null
@@ -104,10 +119,10 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	# we multiply the velocity of the body by the motion factor
 	#if we didn't the speed would be huge, depending on the use case
 	if body is RigidBody2D:
-		var speed = clamp((abs(body.linear_velocity.y) + abs(body.linear_velocity.x) *side_factor) * motion_factor,-5.0,10.0)
+		var speed = clamp((abs(body.linear_velocity.y) + abs(body.linear_velocity.x) *side_factor) * motion_factor,-5.0,2.0)
 		emit_signal("splash", index, speed)
 	if body is CharacterBody2D:
-		var speed = clamp((abs(body.velocity.y) + abs(body.velocity.x) * side_factor) * motion_factor,-5.0,3.0)
+		var speed = clamp((abs(body.velocity.y) + abs(body.velocity.x) * side_factor) * motion_factor,-5.0,2.0)
 		emit_signal("splash", index, speed)
 	#pass # Replace with function body.
 

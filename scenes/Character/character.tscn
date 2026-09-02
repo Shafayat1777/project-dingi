@@ -9,9 +9,8 @@
 [ext_resource type="Script" uid="uid://bcfvrkdtmres1" path="res://scripts/character/HeldItemUI.gd" id="6_myntp"]
 [ext_resource type="PackedScene" uid="uid://1ltmwanatlap" path="res://scenes/Throwable/line_hook.tscn" id="8_5lfdo"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b85if"]
-radius = 30.0
-height = 65.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tuv23"]
+size = Vector2(20, 63)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yenhn"]
 atlas = ExtResource("1_oakiv")
@@ -232,7 +231,7 @@ script = ExtResource("1_yenhn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1778992500]
 position = Vector2(-1, 0.5)
-shape = SubResource("CapsuleShape2D_b85if")
+shape = SubResource("RectangleShape2D_tuv23")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2140670731]
 position = Vector2(-2, -33)
