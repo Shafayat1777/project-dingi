@@ -2,6 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://csyrxbo5yxbac" path="res://assets/Water/Water_particle_1.png" id="1_o1bb3"]
 
+[sub_resource type="Gradient" id="Gradient_o1bb3"]
+offsets = PackedFloat32Array(0, 0)
+colors = PackedColorArray(0.40392157, 1, 1, 1, 0.9783208, 0.91431284, 0.9646285, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gx1hf"]
+gradient = SubResource("Gradient_o1bb3")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
 direction = Vector3(0, -1, 0)
 spread = 40.0
@@ -13,6 +20,7 @@ damping_max = 80.0
 scale_min = 0.099999994
 scale_max = 0.39999998
 color = Color(0.6, 0.8, 1, 0.8)
+color_ramp = SubResource("GradientTexture1D_gx1hf")
 
 [node name="WaterSplash" type="GPUParticles2D" unique_id=787729712]
 emitting = false

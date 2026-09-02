@@ -159,6 +159,12 @@ func spawn_splash_particles(index, speed):
 	# scale particle intensity with impact speed
 	p.amount = clamp(int(abs(speed) * 2), 2, 5)
 	
+	var mat = p.process_material.duplicate()
+	
+	var colors = [Color(0.6, 0.8, 1.0, 0.9), Color(1.0, 1.0, 1.0, 0.9)]
+	mat.color = colors[randi() % colors.size()]
+	
+	p.process_material = mat
 	p.emitting = true
 	
 	# auto-remove after particles finish

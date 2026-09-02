@@ -31,11 +31,11 @@ var bodies_in_water = []
 #how much and external object will affect its speed in water; lower = more resistance
 @export var water_drag = 0.97
 #ripple effect while idle
-@export var idle_ripple_factor = 0.5
+@export var idle_ripple_factor = 0.6
 #seconds between idle pulses
-@export var idle_ripple_interval = 0.4
-
+@export var idle_ripple_interval = 0.5
 var idle_ripple_timer = 0.0
+@export var idle_velocity_threshold = 5.0
 
 
 
@@ -46,14 +46,22 @@ func _physics_process(delta):
 				body.linear_velocity *= water_drag
 			elif body is CharacterBody2D:
 				body.velocity *= water_drag
-
+	
 	if bodies_in_water.size() > 0:
-		idle_ripple_timer += delta
-		if idle_ripple_timer >= idle_ripple_interval:
-			idle_ripple_timer = 0.0
-			var pulse = sin(Time.get_ticks_msec() * 0.005) * idle_ripple_factor
-			emit_signal("splash", index, pulse)
-
+		var should_idle_ripple = true
+		for body in bodies_in_water:
+			if not is_instance_valid(body):
+				continue
+			var vel = body.linear_velocity if body is RigidBody2D else body.velocity
+			if vel.length() > idle_velocity_threshold:
+				should_idle_ripple = false
+		
+		if should_idle_ripple:
+			idle_ripple_timer += delta
+			if idle_ripple_timer >= idle_ripple_interval:
+				idle_ripple_timer = 0.0
+				var pulse = sin(Time.get_ticks_msec() * 0.005) * idle_ripple_factor
+				emit_signal("splash", index, pulse)
 
 var collided_with = null
 
@@ -109,10 +117,9 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	#called when a body collides with a spring
 	
 	#if the body already collided with the spring, then do not collide
-	if body == collided_with:
+	if body in bodies_in_water:
 		return
 	
-	collided_with = body
 	bodies_in_water.append(body)
 	
 	
@@ -128,7 +135,5 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 
 
 func _on_area_2d_body_exited(body: Node2D) -> void:
-	if body == collided_with:
-		collided_with = null
 		bodies_in_water.erase(body)
 	#pass # Replace with function body.
