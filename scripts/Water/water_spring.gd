@@ -89,6 +89,8 @@ func water_update(spring_constant, dampening):
 	#equivalent to velocity = velocity + force
 	velocity += force
 	
+	velocity = clamp(velocity, -30.0, 30.0) #velocity clamp for safety
+	
 	#make the spring move
 	position.y += velocity
 	pass

@@ -43,12 +43,32 @@ var bottom = target_height + depth
 @export var particle_splash_threshold = 1.0
 #minimum speed to trigger particle splash
 
+enum WaterState { STILL , NORMAL , STORMY }
+enum WaveDirection { LEFT, RIGHT}
+
+@export var water_state: WaterState = WaterState.NORMAL :
+	set(value):
+		water_state = value
+		apply_water_state()
+
+@export var wave_direction:  WaveDirection = WaveDirection.RIGHT
+
+var idle_wave_amplitude = 0.3
+var idle_wave_speed = 1.5
+var idle_wave_length = 0.05
+
+@export var spread_damping = 0.085
+
+
+
 func _ready():
 	
 	water_border.width = border_thickness
 	water_border.spline_length = distance_between_springs/2
 	
 	spread = spread / 100
+	
+	apply_water_state()
 	
 	#loops through all the springs
 	#makes an array with all the springs
@@ -73,6 +93,9 @@ func _physics_process(delta):
 	for i in springs:
 		i.water_update(k,d)
 	
+	
+	apply_idle_wave()
+	
 	#represents the movement of the left and right neighbor of the springs
 	var left_deltas = []
 	var right_deltas = []
@@ -88,11 +111,11 @@ func _physics_process(delta):
 		for i in range(springs.size()):
 			#adds velocity to the spring to the LEFT of the current spring
 			if i > 0:
-				left_deltas[i] = spread * (springs[i].height - springs[i-1].height)
+				left_deltas[i] = spread * (springs[i].height - springs[i-1].height) * spread_damping
 				springs[i-1].velocity += left_deltas[i]
 			#adds velocity to the spring to the RIGHT of the current spring
 			if i < springs.size()-1:
-				right_deltas[i] = spread * (springs[i].height - springs [i+1].height)
+				right_deltas[i] = spread * (springs[i].height - springs [i+1].height) * spread_damping
 				springs[i+1].velocity += right_deltas[i]
 	new_border()
 	draw_water_body()
@@ -170,3 +193,42 @@ func spawn_splash_particles(index, speed):
 	# auto-remove after particles finish
 	await get_tree().create_timer(p.lifetime + 0.1).timeout
 	p.queue_free()
+
+
+func apply_water_state():
+	match water_state:
+		WaterState.STILL:
+			k = 0.018
+			d = 0.06
+			spread = 0.0010
+			passes = 12
+			idle_wave_amplitude = 0.05
+			idle_wave_speed = 0.5
+		WaterState.NORMAL:
+			k = 0.015
+			d = 0.25
+			spread = 0.10
+			passes = 8
+			idle_wave_amplitude = 0.6
+			idle_wave_speed = 6
+			idle_wave_length = 0.25
+		WaterState.STORMY:
+			k = 0.0015
+			d = 0.25
+			spread = 0.10      
+			passes = 8
+			idle_wave_amplitude = 0.2
+			idle_wave_speed = 3.5
+			idle_wave_length = 0.02
+
+func apply_idle_wave():
+	var t = Time.get_ticks_msec() * 0.001
+	var dir = 1.0 if wave_direction == WaveDirection.RIGHT else -1.0
+	
+	for s in springs:
+		var wave = sin(s.position.x * idle_wave_length - t * idle_wave_speed * dir) * idle_wave_amplitude
+		s.velocity += wave 
+	
+	if water_state == WaterState.STORMY and randf() < 0.02:
+		var random_index = randi() % springs.size()
+		splash(random_index, randf_range(-3.0, 3.0))

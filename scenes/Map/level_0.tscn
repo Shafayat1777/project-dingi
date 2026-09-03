@@ -517,7 +517,9 @@ collision_mask = 23
 [node name="Water_Body" parent="." unique_id=18857598 instance=ExtResource("5_gx1hf")]
 position = Vector2(702, 577)
 passes = 6
-distance_between_springs = 15
+distance_between_springs = 16
+spring_number = 60
+water_state = 2
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=860524077]
 position = Vector2(4, 76)
