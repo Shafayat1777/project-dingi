@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://x7qdfakce8m0" path="res://scenes/Character/character.tscn" id="3_b85if"]
 [ext_resource type="PackedScene" uid="uid://m6d5ugkostkw" path="res://scenes/Throwable/debris.tscn" id="4_k7eyg"]
 [ext_resource type="PackedScene" uid="uid://p2wbsekcuhig" path="res://scenes/water/water_body.tscn" id="5_gx1hf"]
+[ext_resource type="PackedScene" uid="uid://cvrsvghtmk4gi" path="res://scenes/Throwable/broken_plank.tscn" id="6_plna8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7eyg"]
 texture = ExtResource("2_b85if")
@@ -532,3 +533,6 @@ position = Vector2(448, 430.00003)
 
 [node name="Debris2" parent="." unique_id=2047754729 instance=ExtResource("4_k7eyg")]
 position = Vector2(441, 400)
+
+[node name="Broken-Plank" parent="." unique_id=840583650 instance=ExtResource("6_plna8")]
+position = Vector2(588, 414)

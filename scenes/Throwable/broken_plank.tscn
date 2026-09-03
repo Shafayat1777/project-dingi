@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cvrsvghtmk4gi"]
+
+[ext_resource type="Texture2D" uid="uid://d2ha8hq5sncnc" path="res://assets/items/broken_plank.png" id="1_tcolu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_08r2w"]
+atlas = ExtResource("1_tcolu")
+region = Rect2(8, 8, 48, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(56, 22)
+
+[node name="Broken-Plank" type="RigidBody2D" unique_id=840583650]
+collision_layer = 4
+collision_mask = 5
+input_pickable = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1278151428]
+rotation = 0.7853982
+texture = SubResource("AtlasTexture_08r2w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1994578167]
+shape = SubResource("RectangleShape2D_6f4wy")
