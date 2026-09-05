@@ -10,19 +10,18 @@ const JUMP_VELOCITY = -400.0
 var push_force = 60.0
 
 @export var swing_push_force := 600.0
+@export var standing_weight_force := 400.0
+@export var water_push_force := 300.0
 
 var is_swinging := false
 
 func _physics_process(delta: float) -> void:
-	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	# Get the input direction and handle the movement/deceleration.
 	var direction := Input.get_axis("left", "right")
 
-	# Handle jump on the ground. Swing-jumps are triggered directly by
-	# the hook script (see line_hook.gd _input), not here.
+	# swing-jumps are handled in line_hook.gd, not here
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
@@ -35,7 +34,6 @@ func _physics_process(delta: float) -> void:
 		elif is_on_floor():
 			velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
 
-	# Handle animations based on state
 	if not is_on_floor():
 		animated_sprite_2d.flip_h = direction < 0
 		animated_sprite_2d.play("jump")
@@ -52,5 +50,14 @@ func _physics_process(delta: float) -> void:
 
 	for i in get_slide_collision_count():
 		var c = get_slide_collision(i)
-		if c.get_collider() is RigidBody2D:
-			c.get_collider().apply_central_impulse(-c.get_normal() * push_force)
+		var collider = c.get_collider()
+		if collider is RigidBody2D:
+			var normal = c.get_normal()
+			if normal.dot(Vector2.UP) > 0.7:
+				# continuous weight, not an impulse, so a floating object dips and bobs
+				collider.apply_force(Vector2(0, standing_weight_force), c.get_position() - collider.global_position)
+			elif "is_submerged" in collider and collider.is_submerged:
+				# continuous force outlasts the water drag that kills a one-shot impulse
+				collider.apply_central_force(Vector2(-normal.x, 0) * water_push_force)
+			else:
+				collider.apply_central_impulse(-normal * push_force)

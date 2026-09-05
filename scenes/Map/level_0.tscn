@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://m6d5ugkostkw" path="res://scenes/Throwable/debris.tscn" id="4_k7eyg"]
 [ext_resource type="PackedScene" uid="uid://p2wbsekcuhig" path="res://scenes/water/water_body.tscn" id="5_gx1hf"]
 [ext_resource type="PackedScene" uid="uid://cvrsvghtmk4gi" path="res://scenes/Throwable/broken_plank.tscn" id="6_plna8"]
+[ext_resource type="Script" uid="uid://blheqr6th2yqw" path="res://scripts/Water/buoyant_object.gd" id="7_gepiu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7eyg"]
 texture = ExtResource("2_b85if")
@@ -520,7 +521,7 @@ position = Vector2(702, 577)
 passes = 6
 distance_between_springs = 16
 spring_number = 60
-water_state = 2
+water_state = 0
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=860524077]
 position = Vector2(4, 76)
@@ -536,3 +537,6 @@ position = Vector2(441, 400)
 
 [node name="Broken-Plank" parent="." unique_id=840583650 instance=ExtResource("6_plna8")]
 position = Vector2(588, 414)
+mass = 0.975
+script = ExtResource("7_gepiu")
+water_body_path = NodePath("../Water_Body")
