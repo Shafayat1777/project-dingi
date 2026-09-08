@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://p2wbsekcuhig" path="res://scenes/water/water_body.tscn" id="5_gx1hf"]
 [ext_resource type="PackedScene" uid="uid://cvrsvghtmk4gi" path="res://scenes/Throwable/broken_plank.tscn" id="6_plna8"]
 [ext_resource type="Script" uid="uid://blheqr6th2yqw" path="res://scripts/Water/buoyant_object.gd" id="7_gepiu"]
+[ext_resource type="PackedScene" uid="uid://ddp25awxgllci" path="res://scenes/Boat/boat.tscn" id="8_b55fw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7eyg"]
 texture = ExtResource("2_b85if")
@@ -512,8 +513,11 @@ sources/2 = SubResource("TileSetAtlasSource_k7eyg")
 [node name="Background" parent="." unique_id=1523714312 instance=ExtResource("1_c5eyr")]
 position = Vector2(84, 44)
 
+[node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("8_b55fw")]
+position = Vector2(219, 249)
+
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("3_b85if")]
-position = Vector2(672, 427)
+position = Vector2(412, 200)
 collision_mask = 23
 
 [node name="Water_Body" parent="." unique_id=18857598 instance=ExtResource("5_gx1hf")]
@@ -530,13 +534,13 @@ tile_map_data = PackedByteArray("AAAAAA4AAgALAAUAAAAAAA8AAgALAAYAAAAAABAAAgALAAc
 tile_set = SubResource("TileSet_ie1yj")
 
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_k7eyg")]
-position = Vector2(448, 430.00003)
+position = Vector2(139, 505)
 
 [node name="Debris2" parent="." unique_id=2047754729 instance=ExtResource("4_k7eyg")]
-position = Vector2(441, 400)
+position = Vector2(555, 215)
 
 [node name="Broken-Plank" parent="." unique_id=840583650 instance=ExtResource("6_plna8")]
-position = Vector2(588, 414)
+position = Vector2(540, 168)
 mass = 0.975
 script = ExtResource("7_gepiu")
 water_body_path = NodePath("../Water_Body")

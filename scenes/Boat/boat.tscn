@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://ddp25awxgllci"]
+
+[ext_resource type="Texture2D" uid="uid://dvtwqq8fxhlj5" path="res://assets/boat/spr_fishing_boat_6_strip9.png" id="1_u1y6a"]
+[ext_resource type="Script" uid="uid://dk41nxpk5ow5n" path="res://scripts/Boat/cargo_weight.gd" id="2_kr7uc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_08r2w"]
+atlas = ExtResource("1_u1y6a")
+region = Rect2(0, 16, 64, 32)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tkc8d"]
+radius = 13.0
+height = 182.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_08r2w"]
+size = Vector2(167, 20)
+
+[node name="Boat" type="RigidBody2D" unique_id=1550122346]
+collision_layer = 4
+collision_mask = 5
+input_pickable = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2113326389]
+scale = Vector2(4, 4)
+texture = SubResource("AtlasTexture_08r2w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=473146049]
+position = Vector2(-7, 43)
+rotation = -1.5707964
+shape = SubResource("CapsuleShape2D_tkc8d")
+
+[node name="CargoWeight" type="Node2D" parent="." unique_id=1472039783]
+script = ExtResource("2_kr7uc")
+
+[node name="CargoArea" type="Node2D" parent="." unique_id=1360502144]
+
+[node name="Area2D" type="Area2D" parent="CargoArea" unique_id=38036388]
+collision_layer = 32
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CargoArea/Area2D" unique_id=646331058]
+position = Vector2(-8.5, 18)
+shape = SubResource("RectangleShape2D_08r2w")
+debug_color = Color(0.94191134, 0.1639674, 0.45427108, 0.41960785)
+
+[connection signal="body_entered" from="CargoArea/Area2D" to="CargoWeight" method="_on_cargo_area_body_entered"]
+[connection signal="body_exited" from="CargoArea/Area2D" to="CargoWeight" method="_on_cargo_area_body_exited"]
