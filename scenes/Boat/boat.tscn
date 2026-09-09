@@ -1,7 +1,15 @@
 [gd_scene format=3 uid="uid://ddp25awxgllci"]
 
+[ext_resource type="Shader" uid="uid://wf16v5pqeghj" path="res://shaders/Boat/boat_outline.gdshader" id="1_mxnvt"]
 [ext_resource type="Texture2D" uid="uid://dvtwqq8fxhlj5" path="res://assets/boat/spr_fishing_boat_6_strip9.png" id="1_u1y6a"]
 [ext_resource type="Script" uid="uid://dk41nxpk5ow5n" path="res://scripts/Boat/cargo_weight.gd" id="2_kr7uc"]
+[ext_resource type="Script" uid="uid://bpgegsqa7wbhi" path="res://scripts/Boat/boat_highlight.gd" id="3_v47qu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v47qu"]
+shader = ExtResource("1_mxnvt")
+shader_parameter/outline_enabled = false
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/darkness_threshold = 0.25
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_08r2w"]
 atlas = ExtResource("1_u1y6a")
@@ -14,12 +22,15 @@ height = 182.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_08r2w"]
 size = Vector2(167, 20)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(237, 78)
+
 [node name="Boat" type="RigidBody2D" unique_id=1550122346]
 collision_layer = 4
 collision_mask = 5
-input_pickable = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2113326389]
+material = SubResource("ShaderMaterial_v47qu")
 scale = Vector2(4, 4)
 texture = SubResource("AtlasTexture_08r2w")
 
@@ -42,5 +53,25 @@ position = Vector2(-8.5, 18)
 shape = SubResource("RectangleShape2D_08r2w")
 debug_color = Color(0.94191134, 0.1639674, 0.45427108, 0.41960785)
 
+[node name="BoatHighlight" type="Node2D" parent="." unique_id=46514307]
+script = ExtResource("3_v47qu")
+
+[node name="Area2D" type="Area2D" parent="BoatHighlight" unique_id=310866210]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BoatHighlight/Area2D" unique_id=888278076]
+position = Vector2(-8.5, 16)
+shape = SubResource("RectangleShape2D_6f4wy")
+debug_color = Color(0.233735, 0.63270146, 0.23578152, 0.41960785)
+
+[node name="Label" type="Label" parent="BoatHighlight" unique_id=1413812194]
+offset_left = -69.0
+offset_top = -56.0
+offset_right = 66.0
+offset_bottom = -33.0
+text = "Press \"E\" to Enter"
+
 [connection signal="body_entered" from="CargoArea/Area2D" to="CargoWeight" method="_on_cargo_area_body_entered"]
 [connection signal="body_exited" from="CargoArea/Area2D" to="CargoWeight" method="_on_cargo_area_body_exited"]
+[connection signal="body_entered" from="BoatHighlight/Area2D" to="BoatHighlight" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="BoatHighlight/Area2D" to="BoatHighlight" method="_on_area_2d_body_exited"]

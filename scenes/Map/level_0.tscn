@@ -514,7 +514,7 @@ sources/2 = SubResource("TileSetAtlasSource_k7eyg")
 position = Vector2(84, 44)
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("8_b55fw")]
-position = Vector2(219, 249)
+position = Vector2(172, 244)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("3_b85if")]
 position = Vector2(412, 200)
