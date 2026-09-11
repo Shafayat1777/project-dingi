@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://7bnjlp3rw1pf"]
+
+[ext_resource type="Texture2D" uid="uid://ko58v2s2ma61" path="res://assets/tileset/Background_0.png" id="1_uaiu8"]
+[ext_resource type="Texture2D" uid="uid://bklqn10pjou44" path="res://assets/tileset/Background_1.png" id="2_gurm4"]
+
+[node name="Parallax-Background" type="Node2D" unique_id=405190732]
+
+[node name="ParallaxBack" type="Parallax2D" parent="." unique_id=470962952]
+scroll_scale = Vector2(0.1, 1)
+repeat_size = Vector2(1536, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBack" unique_id=878321748]
+texture_filter = 1
+texture_repeat = 2
+position = Vector2(1531, 411)
+scale = Vector2(2, 2)
+texture = ExtResource("1_uaiu8")
+region_enabled = true
+region_rect = Rect2(0, 0, 1536, 416)
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1318260454]
+scroll_scale = Vector2(0.4, 1)
+repeat_size = Vector2(768, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=1372043179]
+texture_filter = 1
+texture_repeat = 2
+position = Vector2(758, 446)
+texture = ExtResource("2_gurm4")
+region_enabled = true
+region_rect = Rect2(0, 0, 1536, 416)
