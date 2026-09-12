@@ -4,14 +4,21 @@
 [ext_resource type="Script" uid="uid://noi7yr2ttlrt" path="res://scripts/Water/smooth_path_modified.gd" id="2_10kku"]
 [ext_resource type="Shader" uid="uid://bip7h6mr8f2kd" path="res://shaders/Water/water_body.gdshader" id="2_etf0t"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wbody"]
+noise_type = 0
+seed = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wbody"]
+seamless = true
+noise = SubResource("FastNoiseLite_wbody")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_etf0t"]
 shader = ExtResource("2_etf0t")
-shader_parameter/top_color = Color(0.2, 0.5, 0.8, 0.5)
-shader_parameter/bottom_color = Color(0, 0.2, 0.4, 0.85)
-shader_parameter/reflection_strength = 0.35
-shader_parameter/wave_speed = 1.0
-shader_parameter/wave_frequency = 12.0
-shader_parameter/distortion_strength = 0.008
+shader_parameter/water_color = Color(0.08, 0.26, 0.15, 0.7)
+shader_parameter/distortion_strength = 0.015
+shader_parameter/scroll_speed = 0.04
+shader_parameter/water_level = 0.5
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_wbody")
 
 [sub_resource type="Curve2D" id="Curve2D_vddtq"]
 
@@ -19,6 +26,7 @@ shader_parameter/distortion_strength = 0.008
 script = ExtResource("1_2xw6q")
 
 [node name="Water_Polygon" type="Polygon2D" parent="." unique_id=1352171394]
+texture_filter = 1
 material = SubResource("ShaderMaterial_etf0t")
 
 [node name="Water_Border" type="Path2D" parent="." unique_id=83688874]

@@ -1,35 +1,59 @@
 shader_type canvas_item;
 
-// Water Color
-uniform vec4 top_color : source_color = vec4(0.2, 0.5, 0.8, 0.5);
-uniform vec4 bottom_color : source_color = vec4(0.0, 0.2, 0.4, 0.85);
+// The screen texture captured by Godot (everything drawn before this water polygon)
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
 
-// Reflection
-uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest_mipmap;
-uniform float reflection_strength : hint_range(0.0, 1.0) = 0.35;
+// Grayscale noise driving the horizontal ripple distortion
+uniform sampler2D noise_texture : repeat_enable;
 
-// Idle animation
-uniform float wave_speed : hint_range(0.0, 5.0) = 1.0;
-uniform float wave_frequency : hint_range(0.0, 50.0) = 12.0;
-uniform float distortion_strength : hint_range(0.0, 0.05) = 0.008;
+// Base tint/opacity of the water over the reflection
+uniform vec4 water_color : source_color = vec4(0.08, 0.26, 0.15, 0.7);
 
-void fragment(){
-	// Animation based on position
-	float wave = sin(UV.x * wave_frequency + TIME * wave_speed) * 0.5
-	           + sin(UV.x * wave_frequency * 1.7 - TIME * wave_speed * 0.6) * 0.5;
-	
-	// Ripple Effect
-	vec2 distorted_uv = SCREEN_UV + vec2(0.0, wave * distortion_strength);
-	vec4 screen_color = texture(screen_texture, distorted_uv);
-	
-	// Top to bottom Gradient
-	vec4 base = mix(top_color, bottom_color, UV.y);
-	
-	// Ripple effect blend
-	vec4 result = mix(base, screen_color, reflection_strength);
-	
-	// Brightness Flash
-	result.rgb += wave * 0.015;
-	
-	COLOR = vec4(result.rgb, base.a);
+// How far pixels are smeared left/right, and how fast the ripple pattern scrolls
+uniform float distortion_strength : hint_range(0.0, 0.1) = 0.02;
+uniform float scroll_speed = 0.05;
+
+// Normalized screen-space Y of the water surface line, pushed each frame from
+// water_body.gd (tracks the spring simulation's average height + camera position)
+uniform float water_level = 0.5;
+
+// Per-spring foam energy, pushed each physics frame; only rises from real splash
+// events (see water_body.gd's splash()), so foam reads as "just impacted" rather
+// than pulsing with ambient wave motion. 128 is a fixed cap (>= spring_number),
+// unused tail entries are zeroed
+uniform float spring_displacement[128];
+uniform int spring_count = 0;
+uniform vec4 foam_color : source_color = vec4(1.0, 1.0, 1.0, 0.9);
+uniform float foam_strength : hint_range(0.0, 2.0) = 0.6;
+uniform float foam_band : hint_range(0.0, 1.0) = 0.15;
+
+void fragment() {
+	// Flip the Y coordinate about the water line to sample from above the surface
+	float depth = SCREEN_UV.y - water_level;
+	vec2 flipped_uv = vec2(SCREEN_UV.x, water_level - depth);
+
+	// Stretch the noise vertically so its streaks read as horizontal ripples,
+	// and scroll it over time for a flowing-water feel
+	vec2 noise_uv = UV * vec2(1.0, 5.0) + vec2(TIME * scroll_speed, 0.0);
+	float noise_val = texture(noise_texture, noise_uv).r;
+
+	// Smear horizontally; distortion grows with depth so reflections blur out
+	// further from the surface line, matching a real water column
+	flipped_uv.x += (noise_val - 0.5) * distortion_strength * depth;
+
+	vec4 reflection_color = texture(screen_texture, flipped_uv);
+
+	vec4 result = mix(reflection_color, water_color, water_color.a);
+
+	// Foam highlight at the real (wavy) surface, using this polygon's own local
+	// UV rather than the flat mirror line, so it sits exactly where a splash
+	// happened instead of on the flattened reflection plane
+	if (spring_count > 0) {
+		int idx = clamp(int(UV.x * float(spring_count)), 0, spring_count - 1);
+		float foam = spring_displacement[idx] * foam_strength;
+		float depth_mask = 1.0 - smoothstep(0.0, foam_band, UV.y);
+		result.rgb = mix(result.rgb, foam_color.rgb, clamp(foam * depth_mask, 0.0, 1.0) * foam_color.a);
+	}
+
+	COLOR = result;
 }
