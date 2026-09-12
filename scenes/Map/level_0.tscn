@@ -486,6 +486,9 @@ spring_number = 65
 water_state = 0
 ravine_start_index = 22
 ravine_end_index = 33
+leaf_count = 60
+moss_count = 35
+debris_depth_range = Vector2(0, 200)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=860524077]
 position = Vector2(4, 76)
