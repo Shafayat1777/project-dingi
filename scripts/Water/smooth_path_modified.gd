@@ -6,6 +6,10 @@ extends Path2D
 @export var _straighten : bool : set = straighten
 @export var width : float = 4.0
 @export var color : Color = Color.WHITE
+
+#optional per-baked-point colors (e.g. to fade the line's alpha along its length);
+#leave empty to draw with the single `color` above, as before
+var point_colors : PackedColorArray = PackedColorArray()
 func straighten(value):
 	if not value: return
 	for i in curve.get_point_count():
@@ -35,4 +39,7 @@ func _get_point(i):
 func _draw():
 	var points = curve.get_baked_points()
 	if points:
-		draw_polyline(points, color, width, true)
+		if point_colors.size() == points.size():
+			draw_polyline_colors(points, point_colors, width, true)
+		else:
+			draw_polyline(points, color, width, true)

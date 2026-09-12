@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c4f8n2wq7xk5v"]
+
+[ext_resource type="Script" path="res://scripts/Water/floating_debris.gd" id="1_debris"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_debris"]
+radius = 20.0
+
+[node name="FloatingDebris" type="Node2D"]
+script = ExtResource("1_debris")
+
+[node name="PushArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PushArea"]
+shape = SubResource("CircleShape2D_debris")

@@ -520,11 +520,12 @@ position = Vector2(1619, 379)
 collision_mask = 23
 
 [node name="Water_Body" parent="." unique_id=18857598 instance=ExtResource("5_gx1hf")]
-position = Vector2(702, 577)
+position = Vector2(4, 577)
 passes = 6
-distance_between_springs = 16
-spring_number = 60
+spring_number = 65
 water_state = 0
+ravine_start_index = 22
+ravine_end_index = 33
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=860524077]
 position = Vector2(4, 76)
@@ -540,6 +541,6 @@ position = Vector2(555, 215)
 
 [node name="Broken-Plank" parent="." unique_id=840583650 instance=ExtResource("6_plna8")]
 position = Vector2(540, 168)
-mass = 0.975
+mass = 0.449
 script = ExtResource("7_gepiu")
 water_body_path = NodePath("../Water_Body")
