@@ -112,6 +112,8 @@ func get_debris_world_x_range() -> Vector2:
 @export var moss_count = 18
 @export var lily_pad_count = 10
 @export var branch_count = 8
+#"sprinkles" - kept sparse compared to the other debris types
+@export var petal_count = 14
 @export var leaf_drift_speed_range = Vector2(4.0, 10.0)
 @export var lily_pad_drift_speed_range = Vector2(1.0, 3.0)
 @export var debris_bob_amplitude_range = Vector2(1.0, 2.5)
@@ -146,6 +148,12 @@ func spawn_floating_debris():
 	for i in range(branch_count):
 		var d = floating_debris_scene.instantiate()
 		d.debris_type = d.DebrisType.BRANCH
+		d.drift_speed = randf_range(leaf_drift_speed_range.x, leaf_drift_speed_range.y)
+		add_debris(d, randf_range(x_range.x, x_range.y))
+
+	for i in range(petal_count):
+		var d = floating_debris_scene.instantiate()
+		d.debris_type = d.DebrisType.PETAL
 		d.drift_speed = randf_range(leaf_drift_speed_range.x, leaf_drift_speed_range.y)
 		add_debris(d, randf_range(x_range.x, x_range.y))
 
