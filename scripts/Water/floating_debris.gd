@@ -6,14 +6,22 @@ extends Node2D
 ## procedural shape/color, drawn via _draw() the same way smooth_path_modified.gd
 ## draws the border line, since no leaf/moss art assets exist in the project.
 
-enum DebrisType { LEAF, MOSS, LILY_PAD, BRANCH }
+enum DebrisType { LEAF, MOSS, LILY_PAD, BRANCH, PETAL }
 
 @export var debris_type: DebrisType = DebrisType.LEAF
-#used for LEAF/MOSS (their original shared color); LILY_PAD/BRANCH use their
-#own fixed tones instead, since one exported color doesn't suit all 4 types
+#used for LEAF/MOSS (their original shared color); LILY_PAD/BRANCH/PETAL use
+#their own fixed tones instead, since one exported color doesn't suit all types
 @export var base_color: Color = Color(0.35, 0.45, 0.15, 0.9)
 const LILY_PAD_COLOR = Color(0.25, 0.55, 0.2, 0.95)
 const BRANCH_COLOR = Color(0.32, 0.22, 0.14, 0.95)
+#a small palette so petals sprinkle in varied pastel tones rather than all
+#being identical
+const PETAL_COLORS = [
+	Color(0.95, 0.55, 0.65, 0.95),
+	Color(0.98, 0.85, 0.9, 0.95),
+	Color(0.9, 0.4, 0.5, 0.95),
+	Color(0.98, 0.75, 0.55, 0.95),
+]
 
 #set by water_body.gd before spawning; drift_speed stays 0 for moss (static)
 var drift_speed: float = 0.0
@@ -159,6 +167,22 @@ func randomize_shape():
 				[Vector2(1, 1.5), Vector2(2, 3.0)],
 				[Vector2(6, -1.5), Vector2(7, -3.0)],
 			]
+
+		DebrisType.PETAL:
+			var petal_base = PETAL_COLORS[randi() % PETAL_COLORS.size()]
+			shape_color = Color.from_hsv(
+				petal_base.h + randf_range(-0.015, 0.015),
+				petal_base.s,
+				clamp(petal_base.v * randf_range(0.9, 1.1), 0.0, 1.0),
+				petal_base.a
+			)
+			#a small rounded teardrop - narrow point at one end, wide rounded
+			#curve at the other
+			shape_points = PackedVector2Array([
+				Vector2(0, -4), Vector2(2, -2), Vector2(2.5, 0.5),
+				Vector2(1, 2.5), Vector2(0, 3), Vector2(-1, 2.5),
+				Vector2(-2.5, 0.5), Vector2(-2, -2)
+			])
 
 	for i in range(shape_points.size()):
 		shape_points[i] *= scale_factor
