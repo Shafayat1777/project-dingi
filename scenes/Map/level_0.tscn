@@ -480,7 +480,7 @@ sources/2 = SubResource("TileSetAtlasSource_k7eyg")
 [node name="Parallax-Background" parent="." unique_id=405190732 instance=ExtResource("9_tkc8d")]
 
 [node name="Water_Body" parent="." unique_id=18857598 instance=ExtResource("5_gx1hf")]
-position = Vector2(4, 577)
+position = Vector2(0, 601)
 passes = 6
 spring_number = 65
 water_state = 0
@@ -497,7 +497,7 @@ tile_set = SubResource("TileSet_ie1yj")
 position = Vector2(1469, 470)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("3_b85if")]
-position = Vector2(1619, 379)
+position = Vector2(1246, 471)
 collision_mask = 23
 
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_k7eyg")]
