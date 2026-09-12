@@ -108,11 +108,18 @@ func get_debris_world_x_range() -> Vector2:
 #by sampling the spring height at each debris's x, reusing the same bracketing-
 #spring interpolation buoyant_object.gd already uses for the same purpose.
 @onready var floating_debris_scene = preload("res://scenes/water/floating_debris.tscn")
-@export var leaf_count = 18
-@export var moss_count = 10
+@export var leaf_count = 30
+@export var moss_count = 18
+@export var lily_pad_count = 10
+@export var branch_count = 8
 @export var leaf_drift_speed_range = Vector2(4.0, 10.0)
+@export var lily_pad_drift_speed_range = Vector2(1.0, 3.0)
 @export var debris_bob_amplitude_range = Vector2(1.0, 2.5)
 @export var debris_bob_speed_range = Vector2(0.8, 1.6)
+#most debris stays near the surface (small values), but a random few are
+#assigned a deeper offset so they sit visibly within the reflective fill
+#instead of every piece lining up exactly on the wavy border
+@export var debris_depth_range = Vector2(0.0, 140.0)
 var floating_debris = []
 
 func spawn_floating_debris():
@@ -130,11 +137,26 @@ func spawn_floating_debris():
 		d.drift_speed = 0.0
 		add_debris(d, randf_range(x_range.x, x_range.y))
 
+	for i in range(lily_pad_count):
+		var d = floating_debris_scene.instantiate()
+		d.debris_type = d.DebrisType.LILY_PAD
+		d.drift_speed = randf_range(lily_pad_drift_speed_range.x, lily_pad_drift_speed_range.y)
+		add_debris(d, randf_range(x_range.x, x_range.y))
+
+	for i in range(branch_count):
+		var d = floating_debris_scene.instantiate()
+		d.debris_type = d.DebrisType.BRANCH
+		d.drift_speed = randf_range(leaf_drift_speed_range.x, leaf_drift_speed_range.y)
+		add_debris(d, randf_range(x_range.x, x_range.y))
+
 func add_debris(d, x_local: float):
 	d.z_index = foreground_z + 1
 	d.bob_amplitude = randf_range(debris_bob_amplitude_range.x, debris_bob_amplitude_range.y)
 	d.bob_speed = randf_range(debris_bob_speed_range.x, debris_bob_speed_range.y)
 	d.bob_phase = randf_range(0.0, TAU)
+	#uniform across the full range, so debris spreads evenly through the water's
+	#depth instead of clustering near the surface
+	d.depth_offset = randf_range(debris_depth_range.x, debris_depth_range.y)
 	d.base_x = x_local
 	d.position.x = x_local
 	add_child(d)
@@ -155,7 +177,7 @@ func update_floating_debris(delta):
 		var bob = sin(t * d.bob_speed + d.bob_phase) * d.bob_amplitude
 		d.position = Vector2(
 			d.base_x + d.push_offset.x,
-			get_water_height_at_local_x(d.base_x) + bob + d.push_offset.y
+			get_water_height_at_local_x(d.base_x) + bob + d.push_offset.y + d.depth_offset
 		)
 
 func get_water_height_at_local_x(x_local: float) -> float:
