@@ -17,6 +17,10 @@ uniform float scroll_speed = 0.05;
 // water_body.gd (tracks the spring simulation's average height + camera position)
 uniform float water_level = 0.5;
 
+// Lets the mirror sampling be switched off for testing without touching
+// water_color - result falls back to a flat water_color fill instead
+uniform bool enable_reflection = true;
+
 // Per-spring foam energy, pushed each physics frame; only rises from real splash
 // events (see water_body.gd's splash()), so foam reads as "just impacted" rather
 // than pulsing with ambient wave motion. 128 is a fixed cap (>= spring_number),
@@ -41,7 +45,7 @@ void fragment() {
 	// further from the surface line, matching a real water column
 	flipped_uv.x += (noise_val - 0.5) * distortion_strength * depth;
 
-	vec4 reflection_color = texture(screen_texture, flipped_uv);
+	vec4 reflection_color = enable_reflection ? texture(screen_texture, flipped_uv) : water_color;
 
 	vec4 result = mix(reflection_color, water_color, water_color.a);
 
@@ -55,5 +59,9 @@ void fragment() {
 		result.rgb = mix(result.rgb, foam_color.rgb, clamp(foam * depth_mask, 0.0, 1.0) * foam_color.a);
 	}
 
-	COLOR = result;
+	// force fully opaque output - water_color.a still controls how much the
+	// tint dominates over the reflection (the mix above), it just no longer
+	// also makes the whole water polygon blend transparently with whatever
+	// was drawn behind it
+	COLOR = vec4(result.rgb, 1.0);
 }
