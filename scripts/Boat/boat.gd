@@ -10,6 +10,7 @@ var driver: CharacterBody2D = null
 
 func _ready() -> void:
 	_apply_surface_settings()
+	
 
 func _apply_surface_settings() -> void:
 	if physics_material_override == null:

@@ -479,7 +479,7 @@ sources/2 = SubResource("TileSetAtlasSource_k7eyg")
 
 [node name="Parallax-Background" parent="." unique_id=405190732 instance=ExtResource("9_tkc8d")]
 
-[node name="Water_Body" parent="." unique_id=18857598 instance=ExtResource("5_gx1hf")]
+[node name="Water_Body" parent="." unique_id=18857598 groups=["water"] instance=ExtResource("5_gx1hf")]
 position = Vector2(0, 601)
 passes = 6
 spring_number = 145
@@ -496,10 +496,10 @@ tile_map_data = PackedByteArray("AAAAAA4AAgALAAUAAAAAAA8AAgALAAYAAAAAABAAAgALAAc
 tile_set = SubResource("TileSet_ie1yj")
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("8_b55fw")]
-position = Vector2(1469, 470)
+position = Vector2(2463, 314)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("3_b85if")]
-position = Vector2(1246, 471)
+position = Vector2(2039, 459)
 collision_mask = 23
 
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_k7eyg")]
@@ -509,7 +509,8 @@ position = Vector2(139, 505)
 position = Vector2(555, 215)
 
 [node name="Broken-Plank" parent="." unique_id=840583650 instance=ExtResource("6_plna8")]
-position = Vector2(540, 168)
+position = Vector2(1569.0002, 355.00003)
+rotation = 1.5270702
 mass = 0.449
 script = ExtResource("7_gepiu")
 water_body_path = NodePath("../Water_Body")
