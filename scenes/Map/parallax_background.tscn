@@ -7,7 +7,6 @@
 
 [node name="ParallaxBack" type="Parallax2D" parent="." unique_id=470962952]
 scroll_scale = Vector2(0, 1)
-repeat_size = Vector2(1536, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBack" unique_id=878321748]
 texture_filter = 1
