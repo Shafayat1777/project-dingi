@@ -499,7 +499,7 @@ tile_map_data = PackedByteArray("AAB8AAgAAgAIABAAAAB8AAkAAgAIABEAAAB8AAoAAgAQAAI
 tile_set = SubResource("TileSet_utspt")
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
-position = Vector2(7169, 478)
+position = Vector2(2261, 379)
 
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_utspt")]
 position = Vector2(2028, 434)

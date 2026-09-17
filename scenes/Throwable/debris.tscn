@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://m6d5ugkostkw"]
 
 [ext_resource type="Texture2D" uid="uid://hcoy34knh1nk" path="res://assets/tileset/Tiles.png" id="1_iq66d"]
+[ext_resource type="PackedScene" uid="uid://bqoevqtoqjdr2" path="res://scenes/Global/proximity_highlight.tscn" id="2_gt442"]
+[ext_resource type="Script" uid="uid://60t4gnt7v5qx" path="res://scripts/Global/grab_object.gd" id="3_eamrs"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_08r2w"]
 atlas = ExtResource("1_iq66d")
@@ -22,3 +24,14 @@ texture = SubResource("AtlasTexture_08r2w")
 position = Vector2(0.75, 0.24999997)
 rotation = -1.5707964
 shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="Proximity-Highlight" parent="." unique_id=250086518 instance=ExtResource("2_gt442")]
+popup_text = "Press 'F' to pickup"
+detection_size = Vector2(90, 40)
+
+[node name="GrabObject" type="Node2D" parent="." unique_id=1475393393]
+script = ExtResource("3_eamrs")
+metadata/_custom_type_script = "uid://60t4gnt7v5qx"
+
+[connection signal="body_entered" from="Proximity-Highlight" to="GrabObject" method="_on_proximity_highlight_body_entered"]
+[connection signal="body_exited" from="Proximity-Highlight" to="GrabObject" method="_on_proximity_highlight_body_exited"]

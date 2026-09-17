@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bqoevqtoqjdr2"]
+
+[ext_resource type="Script" uid="uid://btr35cg5gbky0" path="res://scripts/Global/proximity_highlight.gd" id="1_uaxuy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+
+[node name="Proximity-Highlight" type="Area2D" unique_id=250086518]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_uaxuy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1316032357]
+shape = SubResource("RectangleShape2D_6f4wy")
+debug_color = Color(0.6346749, 0.52789843, 0, 0.41960785)
+
+[node name="Label" type="Label" parent="." unique_id=1604855910]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

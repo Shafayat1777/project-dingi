@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
-@onready var pickup_area: Area2D = $GrabArea
 
 const SPEED = 300.0
 const ACCELERATION = 1000.0
@@ -37,12 +36,11 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		animated_sprite_2d.flip_h = direction < 0
 		animated_sprite_2d.play("jump")
-		if direction != 0:
-			pickup_area.position.x = abs(pickup_area.position.x) * sign(direction)
+
 	elif direction != 0:
 		animated_sprite_2d.flip_h = direction < 0
 		animated_sprite_2d.play("running")
-		pickup_area.position.x = abs(pickup_area.position.x) * sign(direction)
+	
 	else:
 		animated_sprite_2d.play("default")
 
