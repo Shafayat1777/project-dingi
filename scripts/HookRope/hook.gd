@@ -6,7 +6,7 @@ enum State { IDLE, FLYING, STUCK, RECALLING }
 @export var throw_speed := 800.0
 @export var recall_speed := 1000.0
 @export var max_range := 500.0
-@export var min_range := 40.0
+@export var min_range := 5.0
 @export var reel_speed := 200.0  # how fast climb_up/climb_down changes rope length
 @export var drag_force := 20000.0
 @export_flags_2d_physics var stick_to_layers := 1 + 4  # tick World/Objects etc. in inspector
