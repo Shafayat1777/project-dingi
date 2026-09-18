@@ -38,10 +38,6 @@ func _ready():
 	max_contacts_reported = 4
 	body_entered.connect(attachment._on_body_entered)
 
-func _process(_delta):
-	if state != State.IDLE:
-		rope_renderer.update_line()
-
 func _physics_process(delta):
 	match state:
 		State.RECALLING:
@@ -51,3 +47,5 @@ func _physics_process(delta):
 		State.STUCK:
 			reel.handle_reel(delta)
 			swing_controller.constrain_rope(delta)
+
+	rope_renderer.simulate(delta)

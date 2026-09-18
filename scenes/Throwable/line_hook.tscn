@@ -55,6 +55,7 @@ metadata/_custom_type_script = "uid://cmjeq6lg4fo16"
 
 [node name="RopeLineRenderer" type="Node" parent="." unique_id=1720715364]
 script = ExtResource("7_mdl75")
+segment_count = 20
 metadata/_custom_type_script = "uid://dl7gwat5li3s8"
 
 [node name="SwingController" type="Node" parent="." unique_id=1277707392]
