@@ -455,7 +455,7 @@ func apply_water_state():
 			d = 0.06
 			spread = 0.0010
 			passes = 12
-			idle_wave_amplitude = 0.05
+			idle_wave_amplitude = 0.03
 			idle_wave_speed = 0.5
 		WaterState.NORMAL:
 			k = 0.015

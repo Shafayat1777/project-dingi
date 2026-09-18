@@ -491,9 +491,9 @@ petal_count = 50
 debris_depth_range = Vector2(0, 200)
 
 [node name="ReflectionPatchExample" parent="." unique_id=1912172081 instance=ExtResource("10_refpatch")]
-position = Vector2(1414, 1144)
-scale = Vector2(2.15, 2.1500013)
-polygon = PackedVector2Array(0, 0, 275.3098, 0, 304.04456, 0, 550, 0, 550, 60, 0, 60)
+position = Vector2(1789, 928)
+scale = Vector2(2.15, 9.5499935)
+polygon = PackedVector2Array(0, 0, 275.3098, 0, 304.04456, 0, 550, 0, 550, 60, 272.83493, 60.00003, 0, 60)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=860524077]
 position = Vector2(4, 76)

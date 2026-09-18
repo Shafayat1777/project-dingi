@@ -24,7 +24,7 @@ radius = 13.0
 height = 182.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_08r2w"]
-size = Vector2(167, 20)
+size = Vector2(141, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
 size = Vector2(237, 78)
@@ -57,6 +57,7 @@ shape = SubResource("RectangleShape2D_08r2w")
 debug_color = Color(0.94191134, 0.1639674, 0.45427108, 0.41960785)
 
 [node name="BoatHighlight" type="Node2D" parent="." unique_id=46514307]
+visible = false
 script = ExtResource("3_v47qu")
 
 [node name="Area2D" type="Area2D" parent="BoatHighlight" unique_id=310866210]
@@ -85,6 +86,7 @@ script = ExtResource("7_fg55p")
 
 [node name="Buoyancy" type="Node2D" parent="." unique_id=1163057670]
 script = ExtResource("8_bnnrb")
+buoyancy_damping = 10.0
 
 [connection signal="body_entered" from="CargoArea/Area2D" to="CargoArea" method="_on_cargo_area_body_entered"]
 [connection signal="body_exited" from="CargoArea/Area2D" to="CargoArea" method="_on_cargo_area_body_exited"]

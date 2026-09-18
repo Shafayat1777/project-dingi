@@ -9,7 +9,12 @@ class_name InteractionPrompt
 @onready var label: Label = $Label
 
 var character_body: CharacterBody2D = null
-var target_sprite: Sprite2D = null
+
+# CanvasItem is the common base class for BOTH Sprite2D and AnimatedSprite2D.
+# Typing this as CanvasItem (instead of just Sprite2D) lets this one variable
+# hold either type, so the outline shader works no matter which the object uses.
+var target_sprite: CanvasItem = null
+
 var offset_from_target: Vector2 = Vector2.ZERO  # cached local offset (relative to object), computed once
 
 func _ready() -> void:
@@ -21,23 +26,25 @@ func _ready() -> void:
 	label.text = popup_text
 	label.hide()  # hidden until the player enters range
 
-	# Find the Sprite2D on the object this component is attached to,
-	# so we can apply the outline shader to it.
-	target_sprite = get_parent().get_node_or_null("Sprite2D") as Sprite2D
+	# Look for a Sprite2D on the parent object first.
+	target_sprite = get_parent().get_node_or_null("Sprite2D") as CanvasItem
+
+	# If no Sprite2D was found, fall back to checking for an AnimatedSprite2D
+	# instead (this is what your object uses).
+	if target_sprite == null:
+		target_sprite = get_parent().get_node_or_null("AnimatedSprite2D") as CanvasItem
+
+	# Apply the outline shader material to whichever sprite type was found.
 	if target_sprite and target_sprite.material == null:
 		target_sprite.material = ShaderMaterial.new()
 		target_sprite.material.shader = load("res://shaders/Objects/outline.gdshader")
 
 	# top_level = true makes this node ignore the parent's transform
 	# completely (no inherited position, rotation, or scale/flip).
-	# From now on, label.global_position and label.rotation are the
-	# ONLY things that control where it appears — nothing is inherited.
 	label.top_level = true
 
 	# Wait one frame so the Label's size is fully calculated based on its
-	# text/font before we read label.size — right after setting .text,
-	# the size can still be stale/zero for a frame, which throws off
-	# horizontal centering.
+	# text/font before we read label.size for centering.
 	await get_tree().process_frame
 	label.reset_size()
 
@@ -45,10 +52,8 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	# Every frame, manually place the label at the object's current
-	# global position plus our fixed offset. Since the label no longer
-	# inherits the object's transform (top_level), this offset is never
-	# rotated or mirrored by the object flipping or spinning — it always
-	# stays "above" in true world-space terms.
+	# global position plus our fixed offset, so it stays "above" the
+	# object regardless of the object's rotation or flip.
 	var target := get_parent() as Node2D
 	label.global_position = target.global_position + offset_from_target
 	label.rotation = 0.0  # keep it always upright, never rotated
@@ -69,7 +74,8 @@ func _on_body_exited(body: Node2D) -> void:
 
 func _set_outline(value: bool) -> void:
 	# Toggle the shader's "enabled" uniform on/off to turn the outline
-	# effect on the sprite on or off.
+	# effect on the sprite on or off. Works the same whether target_sprite
+	# is a Sprite2D or AnimatedSprite2D, since both use "material" the same way.
 	if target_sprite and target_sprite.material is ShaderMaterial:
 		target_sprite.material.set_shader_parameter("enabled", value)
 
@@ -77,7 +83,6 @@ func _calculate_offset() -> void:
 	var target := get_parent()
 	var height := 0.0
 
-	# Try to determine the object's height from its own CollisionShape2D.
 	var col_shape := target.get_node_or_null("CollisionShape2D") as CollisionShape2D
 	if col_shape and col_shape.shape:
 		var shape := col_shape.shape
@@ -88,15 +93,20 @@ func _calculate_offset() -> void:
 		elif shape is CapsuleShape2D:
 			height = shape.height
 
-	# Fallback: estimate height from the Sprite2D's texture size instead.
 	if height == 0.0:
-		var sprite := target.get_node_or_null("Sprite2D") as Sprite2D
-		if sprite and sprite.texture:
-			height = sprite.texture.get_height() * sprite.scale.y
+		if target_sprite is Sprite2D and target_sprite.texture:
+			height = target_sprite.texture.get_height() * target_sprite.scale.y
 
-	# Store this as a fixed world-space offset (not attached to any
-	# rotating/flipping transform) — used every frame in _process().
-	# X: shift left by half the label's width to center it horizontally.
-	# Y: move up to the top edge, add gap, then move up by the label's
-	#    own height so its bottom (not top) sits at that point.
+		elif target_sprite is AnimatedSprite2D:
+			# Cast explicitly so the editor recognizes AnimatedSprite2D-specific
+			# properties like sprite_frames and animation.
+			var anim_sprite := target_sprite as AnimatedSprite2D
+
+			var frames: SpriteFrames = anim_sprite.sprite_frames
+			var anim: String = anim_sprite.animation
+			if frames and frames.get_frame_count(anim) > 0:
+				var tex: Texture2D = frames.get_frame_texture(anim, 0)
+				if tex:
+					height = tex.get_height() * anim_sprite.scale.y
+
 	offset_from_target = Vector2(-label.size.x / 2, -(height / 2) - gap_above - label.size.y)

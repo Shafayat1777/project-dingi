@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://cvrsvghtmk4gi"]
 
 [ext_resource type="Texture2D" uid="uid://d2ha8hq5sncnc" path="res://assets/items/broken_plank.png" id="1_tcolu"]
+[ext_resource type="Script" uid="uid://c615ojffmd7go" path="res://scripts/Boat/buoyancy2.gd" id="2_hopom"]
+[ext_resource type="PackedScene" uid="uid://bqoevqtoqjdr2" path="res://scenes/Global/proximity_highlight.tscn" id="3_xm8a4"]
+[ext_resource type="Script" uid="uid://60t4gnt7v5qx" path="res://scripts/Global/grab_object.gd" id="4_wduk7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_08r2w"]
 atlas = ExtResource("1_tcolu")
@@ -20,3 +23,16 @@ texture = SubResource("AtlasTexture_08r2w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1994578167]
 shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="Buoyancy" type="Node2D" parent="." unique_id=2045223231]
+script = ExtResource("2_hopom")
+
+[node name="Proximity-Highlight" parent="." unique_id=250086518 instance=ExtResource("3_xm8a4")]
+popup_text = "Press 'F' to Pickup"
+
+[node name="GrabObject" type="Node2D" parent="." unique_id=1052527121]
+script = ExtResource("4_wduk7")
+metadata/_custom_type_script = "uid://60t4gnt7v5qx"
+
+[connection signal="body_entered" from="Proximity-Highlight" to="GrabObject" method="_on_proximity_highlight_body_entered"]
+[connection signal="body_exited" from="Proximity-Highlight" to="GrabObject" method="_on_proximity_highlight_body_exited"]
