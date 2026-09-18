@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://c8m4x2k5qawqr"]
+
+[ext_resource type="Shader" uid="uid://bip7h6mr8f2kd" path="res://shaders/Water/water_body.gdshader" id="1_shader"]
+[ext_resource type="Script" path="res://scripts/Water/reflection_patch.gd" id="2_script"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_patch"]
+noise_type = 0
+seed = 7
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_patch"]
+seamless = true
+noise = SubResource("FastNoiseLite_patch")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_patch"]
+shader = ExtResource("1_shader")
+shader_parameter/water_color = Color(0.08, 0.26, 0.15, 0.7)
+shader_parameter/distortion_strength = 0.015
+shader_parameter/scroll_speed = 0.04
+shader_parameter/water_level = 0.5
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_patch")
+
+[node name="ReflectionPatch" type="Polygon2D"]
+texture_filter = 1
+polygon = PackedVector2Array(0, 0, 128, 0, 128, 64, 0, 64)
+material = SubResource("ShaderMaterial_patch")
+script = ExtResource("2_script")

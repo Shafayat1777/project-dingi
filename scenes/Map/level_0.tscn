@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://blheqr6th2yqw" path="res://scripts/Water/buoyant_object.gd" id="7_gepiu"]
 [ext_resource type="PackedScene" uid="uid://ddp25awxgllci" path="res://scenes/Boat/boat.tscn" id="8_b55fw"]
 [ext_resource type="PackedScene" uid="uid://7bnjlp3rw1pf" path="res://scenes/Map/parallax_background.tscn" id="9_tkc8d"]
+[ext_resource type="PackedScene" uid="uid://c8m4x2k5qawqr" path="res://scenes/water/reflection_patch.tscn" id="10_refpatch"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7eyg"]
 texture = ExtResource("2_b85if")
@@ -489,6 +490,11 @@ moss_count = 35
 petal_count = 50
 debris_depth_range = Vector2(0, 200)
 
+[node name="ReflectionPatchExample" parent="." unique_id=1912172081 instance=ExtResource("10_refpatch")]
+position = Vector2(1786, 514)
+scale = Vector2(2.15, 2.1500013)
+polygon = PackedVector2Array(0, 0, 275.3098, 0, 550, 0, 550, 60, 0, 60)
+
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=860524077]
 position = Vector2(4, 76)
 scale = Vector2(2, 2)
@@ -496,7 +502,7 @@ tile_map_data = PackedByteArray("AAAAAA4AAgALAAUAAAAAAA8AAgALAAYAAAAAABAAAgALAAc
 tile_set = SubResource("TileSet_ie1yj")
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("8_b55fw")]
-position = Vector2(1839, 368)
+position = Vector2(2317, 345)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("3_b85if")]
 position = Vector2(2039, 459)
