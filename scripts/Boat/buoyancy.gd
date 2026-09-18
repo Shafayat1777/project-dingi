@@ -37,6 +37,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not water_body:
+		
+		
 		return
 
 	var gravity_mag = body.get_gravity().length()
