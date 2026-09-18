@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://dk41nxpk5ow5n" path="res://scripts/Boat/cargo_weight.gd" id="2_kr7uc"]
 [ext_resource type="Script" uid="uid://bpgegsqa7wbhi" path="res://scripts/Boat/boat_highlight.gd" id="3_v47qu"]
 [ext_resource type="Script" uid="uid://c8l4wkpxgosi8" path="res://scripts/Boat/boat_mount.gd" id="6_uv258"]
-[ext_resource type="Script" uid="uid://c615ojffmd7go" path="res://scripts/Boat/buoyancy2.gd" id="7_fg55p"]
+[ext_resource type="Script" uid="uid://c28u3tjdag2oh" path="res://scripts/Boat/boat_driver.gd" id="7_fg55p"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v47qu"]
 shader = ExtResource("1_mxnvt")

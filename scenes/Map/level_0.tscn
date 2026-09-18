@@ -502,7 +502,7 @@ tile_map_data = PackedByteArray("AAAAAA4AAgALAAUAAAAAAA8AAgALAAYAAAAAABAAAgALAAc
 tile_set = SubResource("TileSet_ie1yj")
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("8_b55fw")]
-position = Vector2(2317, 345)
+position = Vector2(1855, 416)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("3_b85if")]
 position = Vector2(2039, 459)
