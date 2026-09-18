@@ -46,7 +46,7 @@ func _physics_process(delta: float) -> void:
 	is_submerged = false
 
 	for side in [-1.0, 1.0]:
-		var point = collision_shape.global_transform * Vector2(side * half_width, 0)
+		var point = body.to_global(collision_shape.position + Vector2(side * half_width, 0))
 		var water_height = get_water_height_at(point.x)
 		var submersion_depth = point.y - water_height
 

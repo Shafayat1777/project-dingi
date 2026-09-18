@@ -42,6 +42,8 @@ var idle_ripple_timer = 0.0
 func _physics_process(delta):
 	for body in bodies_in_water:
 		if is_instance_valid(body):
+			if "receives_water_drag" in body and not body.receives_water_drag:
+				continue
 			if body is RigidBody2D:
 				body.linear_velocity *= water_drag
 			elif body is CharacterBody2D:
