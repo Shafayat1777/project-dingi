@@ -1,7 +1,14 @@
 [gd_scene format=3 uid="uid://1ltmwanatlap"]
 
 [ext_resource type="Texture2D" uid="uid://cibdl2wkv15" path="res://assets/items/rope_and_hook.png" id="1_hxp0v"]
-[ext_resource type="Script" uid="uid://5855w42sqjx1" path="res://scripts/Throwable/line_hook.gd" id="1_k36id"]
+[ext_resource type="Script" uid="uid://btg4hpnykdlh6" path="res://scripts/HookRope/hook.gd" id="1_lq7qr"]
+[ext_resource type="Script" uid="uid://bfg0mhmnvs8i0" path="res://scripts/HookRope/hook_thrower.gd" id="3_c14pe"]
+[ext_resource type="Script" uid="uid://chw16tyeg40b7" path="res://scripts/HookRope/hook_recaller.gd" id="4_8y1r0"]
+[ext_resource type="Script" uid="uid://0kbqemj5weno" path="res://scripts/HookRope/hook_input.gd" id="5_h4sia"]
+[ext_resource type="Script" uid="uid://brfjoryq7ocip" path="res://scripts/HookRope/hook_attachment.gd" id="6_t3xxt"]
+[ext_resource type="Script" uid="uid://dl7gwat5li3s8" path="res://scripts/HookRope/rope_line_renderer.gd" id="7_mdl75"]
+[ext_resource type="Script" uid="uid://cmjeq6lg4fo16" path="res://scripts/HookRope/rope_reel.gd" id="8_rrmg5"]
+[ext_resource type="Script" uid="uid://c4oh4hfdcp1q0" path="res://scripts/HookRope/swing_controller.gd" id="9_ad5qi"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0u4sf"]
 atlas = ExtResource("1_hxp0v")
@@ -13,7 +20,7 @@ radius = 5.0
 [node name="Line-Hook" type="RigidBody2D" unique_id=118512847]
 collision_layer = 8
 collision_mask = 5
-script = ExtResource("1_k36id")
+script = ExtResource("1_lq7qr")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=730607294]
 texture = SubResource("AtlasTexture_0u4sf")
@@ -25,3 +32,31 @@ shape = SubResource("CircleShape2D_tfdxj")
 [node name="Line2D" type="Line2D" parent="." unique_id=925682593]
 width = 3.0
 default_color = Color(0.6313726, 0.41960785, 0.24705882, 1)
+
+[node name="HookAttachment" type="Node" parent="." unique_id=1320885367]
+script = ExtResource("6_t3xxt")
+metadata/_custom_type_script = "uid://brfjoryq7ocip"
+
+[node name="HookInput" type="Node" parent="." unique_id=132183862]
+script = ExtResource("5_h4sia")
+metadata/_custom_type_script = "uid://0kbqemj5weno"
+
+[node name="HookRecaller" type="Node" parent="." unique_id=1940227680]
+script = ExtResource("4_8y1r0")
+metadata/_custom_type_script = "uid://chw16tyeg40b7"
+
+[node name="HookThrower" type="Node" parent="." unique_id=1547658690]
+script = ExtResource("3_c14pe")
+metadata/_custom_type_script = "uid://bfg0mhmnvs8i0"
+
+[node name="RopeReel" type="Node" parent="." unique_id=1856089103]
+script = ExtResource("8_rrmg5")
+metadata/_custom_type_script = "uid://cmjeq6lg4fo16"
+
+[node name="RopeLineRenderer" type="Node" parent="." unique_id=1720715364]
+script = ExtResource("7_mdl75")
+metadata/_custom_type_script = "uid://dl7gwat5li3s8"
+
+[node name="SwingController" type="Node" parent="." unique_id=1277707392]
+script = ExtResource("9_ad5qi")
+metadata/_custom_type_script = "uid://c4oh4hfdcp1q0"

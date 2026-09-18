@@ -1,7 +1,5 @@
 extends Node2D
 
-const HOOKROPE = preload("res://scenes/Throwable/hook_rope_generation.tscn")
-
 @onready var line_2d: Line2D = $Line2D
 
 @export var initial_velocity: Vector2 = Vector2(800, 0) # y = -600
@@ -37,11 +35,3 @@ func update_trajectory(_delta: float) -> void:
 		var t = i * TIME_STEP
 		var point = start_pos + velocity * t + 0.5 * Vector2(0, gravity) * t * t
 		line_2d.add_point(to_local(point))
-
-
-func throw() -> void:
-	var hook_rope_instance = HOOKROPE.instantiate()
-	get_tree().root.add_child(hook_rope_instance)
-	hook_rope_instance.global_position = global_position
-	var hook = hook_rope_instance.get_node("Hook")
-	hook.launch(rotation, initial_velocity)
