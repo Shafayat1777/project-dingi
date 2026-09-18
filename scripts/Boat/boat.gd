@@ -8,6 +8,11 @@ extends RigidBody2D
 var is_occupied: bool = false
 var driver: CharacterBody2D = null
 
+# opted out of water_spring.gd's per-frame velocity drag — the boat already
+# gets its own surface friction/linear_damp via _apply_surface_settings(),
+# and the extra drag fought rowing (boat_driver.gd) and buoyancy2.gd's forces
+var receives_water_drag: bool = false
+
 func _ready() -> void:
 	_apply_surface_settings()
 

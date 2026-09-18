@@ -241,7 +241,6 @@ limit_left = 0
 limit_top = 0
 limit_bottom = 823
 limit_smoothed = true
-position_smoothing_enabled = true
 
 [node name="Pickable-Position" type="Marker2D" parent="." unique_id=1815041864]
 position = Vector2(-1, -52)
