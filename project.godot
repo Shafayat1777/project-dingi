@@ -99,6 +99,7 @@ interact={
 2d_physics/layer_4="hook"
 2d_physics/layer_5="water"
 2d_physics/layer_6="boat_interior"
+2d_physics/layer_7="dock"
 
 [physics]
 
