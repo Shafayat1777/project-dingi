@@ -22,8 +22,6 @@ func constrain_rope(delta):
 		hook.player.is_swinging = false
 		return
 
-	hook.player.is_swinging = true
-
 	var dir = to_hook / dist
 
 	# spring-damper: pulls back proportional to how stretched the rope is,
@@ -34,11 +32,27 @@ func constrain_rope(delta):
 	var damping_force = -dir * velocity_along_rope * spring_damping
 	var tension = spring_force + damping_force
 
-	hook.player.velocity += tension * delta
+	# While RopeReel is actively winching an attached RigidBody2D, it shrinks/
+	# lengthens current_rope_length on purpose to drive the tow (see
+	# rope_reel.gd) - that "stretch" is the object being reeled, not the
+	# player straining against the rope. Feeding it into the player's own
+	# velocity was what caused the player to get yanked toward the object for
+	# a frame. So: skip applying tension to the player while that's happening,
+	# but keep applying the full tension/drag to the object below - the tow
+	# itself is unaffected, only the leak into the player is cut.
+	var reeling_object = hook.stuck_body != null and (
+		Input.is_action_pressed("climb_up") or Input.is_action_pressed("climb_down")
+	)
 
-	# safety net: only kicks in past max_stretch, otherwise it's pure spring
-	if stretch > max_stretch:
-		hook.player.global_position += dir * (stretch - max_stretch)
+	if reeling_object:
+		hook.player.is_swinging = false
+	else:
+		hook.player.is_swinging = true
+		hook.player.velocity += tension * delta
+
+		# safety net: only kicks in past max_stretch, otherwise it's pure spring
+		if stretch > max_stretch:
+			hook.player.global_position += dir * (stretch - max_stretch)
 
 	# Newton's third law: the rope pulls the attached object back with the
 	# same tension it exerts on the player, just reversed. apply_central_force
