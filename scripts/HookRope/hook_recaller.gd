@@ -5,7 +5,7 @@ extends Node
 
 func recall():
 	hook.state = Hook.State.RECALLING
-	hook.stuck_body = null
+	hook.detach_stuck_body()
 	hook.player.is_swinging = false
 	hook.freeze = false
 	hook.set_deferred("collision_layer", 0)
@@ -18,7 +18,7 @@ func recall_hook():
 
 	if hook.global_position.distance_to(hook.player.global_position) < 20:
 		hook.state = Hook.State.IDLE
-		hook.stuck_body = null
+		hook.detach_stuck_body()
 		hook.player.is_swinging = false
 		hook.freeze = true
 		hook.linear_velocity = Vector2.ZERO

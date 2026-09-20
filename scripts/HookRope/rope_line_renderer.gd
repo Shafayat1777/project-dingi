@@ -89,7 +89,9 @@ func _draw() -> void:
 		hook.line.add_point(hook.to_local(points[i]))
 
 # Total length of the simulated chain right now (can be > current_rope_length
-# when the rope is being stretched taut). Used by SwingController for tension.
+# when the rope is being stretched taut). Not used for the swing force (see
+# note in the Verlet Rope + Elastic Swing section above) — kept for potential
+# future use (e.g. visually tinting the rope when overstretched).
 func get_chain_length() -> float:
 	var total := 0.0
 	for i in range(points.size() - 1):

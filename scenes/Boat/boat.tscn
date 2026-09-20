@@ -57,7 +57,6 @@ shape = SubResource("RectangleShape2D_08r2w")
 debug_color = Color(0.94191134, 0.1639674, 0.45427108, 0.41960785)
 
 [node name="BoatHighlight" type="Node2D" parent="." unique_id=46514307]
-visible = false
 script = ExtResource("3_v47qu")
 
 [node name="Area2D" type="Area2D" parent="BoatHighlight" unique_id=310866210]

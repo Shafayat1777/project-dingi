@@ -514,7 +514,7 @@ position = Vector2(7872, 328)
 position = Vector2(8349, 301)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
-position = Vector2(4397, 528)
+position = Vector2(3860, 445)
 
 [node name="Water_Body" parent="." unique_id=18857598 groups=["water"] instance=ExtResource("3_lxnil")]
 position = Vector2(8121, 543)
@@ -536,4 +536,4 @@ position = Vector2(2028, 434)
 position = Vector2(2122, 503)
 
 [node name="Debris3" parent="." unique_id=1008816604 instance=ExtResource("4_utspt")]
-position = Vector2(2514, 523)
+position = Vector2(3631, 483)

@@ -18,4 +18,4 @@ func _on_body_entered(body: Node) -> void:
 	)
 
 	if body is RigidBody2D:
-		hook.stuck_body = body
+		hook.attach_stuck_body(body, hook.global_position - body.global_position)

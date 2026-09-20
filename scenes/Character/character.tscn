@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cm2u38hkmgcfa" path="res://assets/character/RUN.png" id="3_fqfur"]
 [ext_resource type="Texture2D" uid="uid://bmo7mosbxtdfy" path="res://assets/character/ATTACK 1.png" id="3_fsvua"]
 [ext_resource type="PackedScene" uid="uid://5wipwqvwd6kx" path="res://scenes/Character/trajectory.tscn" id="5_6xo28"]
+[ext_resource type="Script" uid="uid://d4kv7afy0hef4" path="res://scripts/character/camera_pan.gd" id="6_8idae"]
 [ext_resource type="PackedScene" uid="uid://1ltmwanatlap" path="res://scenes/Throwable/line_hook.tscn" id="8_5lfdo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tuv23"]
@@ -236,11 +237,13 @@ autoplay = "default"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1323451590]
 position = Vector2(0, -1)
+offset = Vector2(0, -100)
 zoom = Vector2(1.2, 1.2)
 limit_left = 0
 limit_top = 0
 limit_bottom = 823
 limit_smoothed = true
+script = ExtResource("6_8idae")
 
 [node name="Pickable-Position" type="Marker2D" parent="." unique_id=1815041864]
 position = Vector2(-1, -52)

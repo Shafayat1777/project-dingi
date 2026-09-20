@@ -6,7 +6,7 @@ extends Node
 func throw():
 	hook.show()
 	hook.state = Hook.State.FLYING
-	hook.stuck_body = null
+	hook.detach_stuck_body()
 	hook.freeze = false
 	hook.set_deferred("collision_layer", 8)  # Layer 4 = Hook
 	hook.set_deferred("collision_mask", hook.stick_to_layers)

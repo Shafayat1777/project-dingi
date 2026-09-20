@@ -8,9 +8,10 @@ extends Node
 @onready var hook: Hook = get_parent()
 
 func constrain_rope(delta):
-	# if stuck to a movable object, the hook follows it
+	# if stuck to a movable object, the hook follows its actual stick point
+	# (not the object's origin, which could be a noticeably different spot)
 	if hook.stuck_body:
-		hook.global_position = hook.stuck_body.global_position
+		hook.global_position = hook.stuck_body.global_position + hook.attach_offset
 
 	var to_hook = hook.global_position - hook.player.global_position
 	var dist = to_hook.length()
@@ -23,11 +24,7 @@ func constrain_rope(delta):
 
 	hook.player.is_swinging = true
 
-	# follow the rope's actual curve near the player when we have one,
-	# otherwise fall back to a straight line to the hook
-	var dir = hook.rope_renderer.get_pull_direction()
-	if dir == Vector2.ZERO:
-		dir = to_hook / dist
+	var dir = to_hook / dist
 
 	# spring-damper: pulls back proportional to how stretched the rope is,
 	# damped against the velocity component running along the rope, so it
@@ -35,14 +32,25 @@ func constrain_rope(delta):
 	var velocity_along_rope = hook.player.velocity.dot(dir)
 	var spring_force = dir * stretch * spring_stiffness
 	var damping_force = -dir * velocity_along_rope * spring_damping
+	var tension = spring_force + damping_force
 
-	hook.player.velocity += (spring_force + damping_force) * delta
+	hook.player.velocity += tension * delta
 
 	# safety net: only kicks in past max_stretch, otherwise it's pure spring
 	if stretch > max_stretch:
 		hook.player.global_position += dir * (stretch - max_stretch)
 
-	# apply_central_force respects the body's mass automatically —
-	# heavier objects accelerate slower under the same force, lighter ones faster
+	# Newton's third law: the rope pulls the attached object back with the
+	# same tension it exerts on the player, just reversed. apply_central_force
+	# still divides by the body's own mass, so light objects (e.g. pickupable
+	# items) get dragged noticeably but bounded by the spring's own limits —
+	# unlike a fixed constant force, which can fling a low-mass body violently.
 	if hook.stuck_body:
-		hook.stuck_body.apply_central_force(-dir * hook.drag_force)
+		hook.stuck_body.apply_central_force(-tension)
+
+		# on top of that, a dedicated drag pull toward the player once taut.
+		# multiplying by the body's own mass cancels out apply_central_force's
+		# division by mass, so this behaves as a plain acceleration
+		# (drag_strength px/sec^2) regardless of how heavy the object is —
+		# consistent towing feel for light or heavy attached objects alike.
+		hook.stuck_body.apply_central_force(-dir * hook.stuck_body.mass * hook.drag_strength)
