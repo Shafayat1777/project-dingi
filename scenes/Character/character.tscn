@@ -220,7 +220,7 @@ animations = [{
 
 [node name="Character" type="CharacterBody2D" unique_id=376624278]
 collision_layer = 2
-collision_mask = 7
+collision_mask = 135
 script = ExtResource("1_yenhn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1778992500]

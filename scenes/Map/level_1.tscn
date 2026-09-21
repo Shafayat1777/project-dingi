@@ -515,10 +515,10 @@ position = Vector2(10229, 436)
 position = Vector2(7872, 328)
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("5_0b1c0")]
-position = Vector2(10004, 458)
+position = Vector2(11183, 474)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
-position = Vector2(9998, 367)
+position = Vector2(11128, 402)
 
 [node name="Water_Body" parent="." unique_id=18857598 groups=["water"] instance=ExtResource("3_lxnil")]
 position = Vector2(8121, 543)
