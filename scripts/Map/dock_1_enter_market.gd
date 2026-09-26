@@ -22,4 +22,5 @@ func _on_body_exited(body: Node2D) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if player_inside and event.is_action_pressed("interact"):
 		ui.show()
+		ui.get_node('DockMenu').show()
 		get_tree().paused = true

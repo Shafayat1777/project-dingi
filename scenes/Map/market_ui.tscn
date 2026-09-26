@@ -29,69 +29,287 @@ text = "Press 'E' to enter Market"
 process_mode = 2
 script = ExtResource("2_dkt4m")
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=1045095292]
+[node name="Workshop" type="PanelContainer" parent="CanvasLayer" unique_id=918152495]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/PanelContainer" unique_id=1346227045]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Workshop" unique_id=1658799352]
 layout_mode = 2
 texture = ExtResource("2_o5rxg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer" unique_id=1557374831]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Workshop" unique_id=937239541]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer" unique_id=320461735]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Workshop/MarginContainer" unique_id=105449817]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer" unique_id=1926337701]
+[node name="Label" type="Label" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer" unique_id=835305020]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 64
-text = "Dock 1"
+text = "Workshop"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer" unique_id=2015569370]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer" unique_id=265363551]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_constants/separation = 20
 
-[node name="Button" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1941529710]
+[node name="Button" type="Button" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2129490973]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 30
 text = "Shop"
 
-[node name="Button2" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2063704588]
+[node name="Button2" type="Button" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=913215969]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 30
 text = "Quests"
 
-[node name="Button3" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1234893030]
+[node name="Button3" type="Button" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1643179087]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 30
 text = "Workshop"
 
-[node name="Button4" type="Button" parent="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=136158674]
+[node name="Button4" type="Button" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=328800132]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 30
 text = "Exit"
 
+[node name="Button" type="Button" parent="CanvasLayer/Workshop/MarginContainer/HBoxContainer" unique_id=566444135]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Back
+"
+
+[node name="Quests" type="PanelContainer" parent="CanvasLayer" unique_id=829767537]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Quests" unique_id=277055140]
+layout_mode = 2
+texture = ExtResource("2_o5rxg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Quests" unique_id=248187588]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Quests/MarginContainer" unique_id=1132996105]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer" unique_id=292550818]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+text = "Quest"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer" unique_id=2032121096]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer/VBoxContainer" unique_id=846171800]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Shop"
+
+[node name="Button2" type="Button" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer/VBoxContainer" unique_id=859179617]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Quests"
+
+[node name="Button3" type="Button" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1638969220]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Workshop"
+
+[node name="Button4" type="Button" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer/VBoxContainer" unique_id=286891078]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Exit"
+
+[node name="Button" type="Button" parent="CanvasLayer/Quests/MarginContainer/HBoxContainer" unique_id=1207663120]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Back
+"
+
+[node name="Shop" type="PanelContainer" parent="CanvasLayer" unique_id=142592822]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Shop" unique_id=380932442]
+layout_mode = 2
+texture = ExtResource("2_o5rxg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Shop" unique_id=951696087]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Shop/MarginContainer" unique_id=1751233527]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Shop/MarginContainer/HBoxContainer" unique_id=279741875]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+text = "Shop"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Shop/MarginContainer/HBoxContainer" unique_id=2122799125]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="CanvasLayer/Shop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=523062070]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Shop"
+
+[node name="Button2" type="Button" parent="CanvasLayer/Shop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1154813744]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Quests"
+
+[node name="Button3" type="Button" parent="CanvasLayer/Shop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=397970756]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Workshop"
+
+[node name="Button4" type="Button" parent="CanvasLayer/Shop/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1361650549]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Exit"
+
+[node name="DockMenu" type="PanelContainer" parent="CanvasLayer" unique_id=1045095292]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/DockMenu" unique_id=1346227045]
+layout_mode = 2
+texture = ExtResource("2_o5rxg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/DockMenu" unique_id=1557374831]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/DockMenu/MarginContainer" unique_id=320461735]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/DockMenu/MarginContainer/HBoxContainer" unique_id=1926337701]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+text = "Dock 1
+"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/DockMenu/MarginContainer/HBoxContainer" unique_id=2015569370]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="Button" type="Button" parent="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1941529710]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Shop"
+
+[node name="Button2" type="Button" parent="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2063704588]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Quests"
+
+[node name="Button3" type="Button" parent="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1234893030]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Workshop"
+
+[node name="Button4" type="Button" parent="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer" unique_id=136158674]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 30
+text = "Exit"
+
+[node name="BackButton" type="Button" parent="CanvasLayer" unique_id=883615266]
+offset_left = 1087.0
+offset_top = 20.0
+offset_right = 1132.0
+offset_bottom = 51.0
+size_flags_vertical = 0
+text = "Back
+"
+
 [connection signal="body_entered" from="area2d" to="area2d" method="_on_body_entered"]
 [connection signal="body_exited" from="area2d" to="area2d" method="_on_body_exited"]
-[connection signal="pressed" from="CanvasLayer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/Button4" to="CanvasLayer" method="_on_button_4_pressed"]
+[connection signal="pressed" from="CanvasLayer/Workshop/MarginContainer/HBoxContainer/VBoxContainer/Button4" to="CanvasLayer" method="_on_button_4_pressed"]
+[connection signal="pressed" from="CanvasLayer/Quests/MarginContainer/HBoxContainer/VBoxContainer/Button4" to="CanvasLayer" method="_on_button_4_pressed"]
+[connection signal="pressed" from="CanvasLayer/Shop/MarginContainer/HBoxContainer/VBoxContainer/Button4" to="CanvasLayer" method="_on_button_4_pressed"]
+[connection signal="pressed" from="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer/Button" to="CanvasLayer" method="_on_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer/Button2" to="CanvasLayer" method="_on_button_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer/Button3" to="CanvasLayer" method="_on_button_3_pressed"]
+[connection signal="pressed" from="CanvasLayer/DockMenu/MarginContainer/HBoxContainer/VBoxContainer/Button4" to="CanvasLayer" method="_on_button_4_pressed"]
+[connection signal="pressed" from="CanvasLayer/BackButton" to="CanvasLayer" method="_on_back_button_pressed"]
