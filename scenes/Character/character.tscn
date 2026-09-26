@@ -249,4 +249,5 @@ script = ExtResource("6_8idae")
 position = Vector2(-1, -52)
 
 [node name="Line-Hook" parent="." unique_id=118512847 node_paths=PackedStringArray("player") instance=ExtResource("8_5lfdo")]
+stick_to_layers = 197
 player = NodePath("..")

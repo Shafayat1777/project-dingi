@@ -68,6 +68,27 @@ Spring-mesh water (Van der Windrift-style) driving both visuals and buoyancy:
 - `smooth_path_modified.gd` (`class_name SmoothPathModified`) is a generic `Path2D` subclass that auto-computes smooth in/out tangents from neighboring points (`spline_length`) and draws itself as a polyline — used for the water surface border but not water-specific itself.
 - `reflection_patch.gd` — a standalone decorative `Polygon2D` reusing `water_body.gdshader` (with `spring_count` left at 0 so the shader's foam logic no-ops) purely for its mirror-reflection effect, for placing a reflective patch anywhere without a real simulated water body. Spawns its own non-physical `floating_debris` instances (with their `PushArea` freed before entering the tree) for decoration.
 
+**Dock / Market UI (`scripts/Map/`, `scenes/Map/market_ui.tscn`)**
+`market_ui.tscn` is a self-contained scene instanced into `dock_1.tscn` (as `MarketUI`), replacing what used to be a bare `EnterMarket` Area2D node living directly in the dock scene. Node structure:
+```
+MarketUi (Node2D)
+├── area2d (Area2D, script: dock_1_enter_market.gd, ui → CanvasLayer)
+│   ├── CollisionShape2D
+│   └── Label ("Press 'E' to enter Market")
+└── CanvasLayer (script: dock_ui.gd, process_mode = 2 i.e. Always, so it still runs while paused)
+    └── PanelContainer2 → MarginContainer
+        ├── TextureRect (background image, e.g. assets/map/city_img.jpeg)
+        └── VBoxContainer
+            ├── Button ("Market")   — unwired stub
+            ├── Button2 ("Quest")   — unwired stub
+            ├── Button3 ("Workshop") — unwired stub
+            └── Button4 ("Exit")    — wired to CanvasLayer._on_button_4_pressed
+```
+- `dock_1_enter_market.gd` (on `area2d`) tracks `player_inside` via `_on_body_entered/exited` (checks `body is CharacterBody2D`), shows the "press E" `Label` on enter, and on `interact` (via `_unhandled_input`) shows the `@export var ui: CanvasLayer` (wired in the Inspector to the sibling `CanvasLayer`) and pauses the tree (`get_tree().paused = true`).
+- `dock_ui.gd` (on `CanvasLayer`) closes itself and unpauses on `interact` (while `visible`) or via the Exit button (`_on_button_4_pressed`), calling `get_viewport().set_input_as_handled()` so the `interact` press doesn't leak through while paused.
+- Only "Exit" is functional — "Market"/"Quest"/"Workshop" buttons have no signal connections yet; wire them up rather than adding new buttons when building out those panels.
+- Follow this scene's pattern (self-contained scene: entry-trigger Area2D + Label + pausing CanvasLayer UI, instanced into the map scene) for future dock/UI entry points rather than adding loose Area2D nodes to map scenes directly.
+
 ## Input actions (`project.godot` → `[input]`)
 
 `shoot`, `aim`, `grab`, `pickup`, `drop`, `left`, `right`, `jump`, `climb_up`, `climb_down`, `interact` — defined in `project.godot`, not in code. Check this section before adding new bindings rather than hardcoding keycodes in scripts.

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dils4sr3cqlrf" path="res://scripts/Map/dock_1.gd" id="1_lnlrc"]
 [ext_resource type="Texture2D" uid="uid://hcoy34knh1nk" path="res://assets/tileset/Tiles.png" id="1_ntqkn"]
-[ext_resource type="Script" uid="uid://mmyksgj5nqry" path="res://scripts/Map/dock_1_enter_market.gd" id="3_frlbq"]
+[ext_resource type="PackedScene" uid="uid://b1ui6r2eale23" path="res://scenes/Map/market_ui.tscn" id="3_frlbq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnlrc"]
 texture = ExtResource("1_ntqkn")
@@ -486,9 +486,6 @@ sources/2 = SubResource("TileSetAtlasSource_lnlrc")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
 size = Vector2(317, 109)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_08r2w"]
-size = Vector2(122, 123)
-
 [node name="Dock" type="Node2D" unique_id=551199909]
 script = ExtResource("1_lnlrc")
 
@@ -517,23 +514,8 @@ text = "Press 'W' to Enter Dock"
 [node name="Marker2D" type="Marker2D" parent="." unique_id=1634543999]
 position = Vector2(606, 12)
 
-[node name="EnterMarket" type="Area2D" parent="." unique_id=1144586139]
-collision_layer = 0
-collision_mask = 2
-script = ExtResource("3_frlbq")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnterMarket" unique_id=831155026]
-position = Vector2(167, -20.5)
-shape = SubResource("RectangleShape2D_08r2w")
-
-[node name="Label" type="Label" parent="EnterMarket" unique_id=764392270]
-offset_left = 85.0
-offset_top = -77.0
-offset_right = 274.0
-offset_bottom = -54.0
-text = "Press 'E' to enter Market"
+[node name="MarketUI" parent="." unique_id=1329636193 instance=ExtResource("3_frlbq")]
+position = Vector2(132, -7)
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
-[connection signal="body_entered" from="EnterMarket" to="EnterMarket" method="_on_body_entered"]
-[connection signal="body_exited" from="EnterMarket" to="EnterMarket" method="_on_body_exited"]
