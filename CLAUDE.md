@@ -68,6 +68,13 @@ Spring-mesh water (Van der Windrift-style) driving both visuals and buoyancy:
 - `smooth_path_modified.gd` (`class_name SmoothPathModified`) is a generic `Path2D` subclass that auto-computes smooth in/out tangents from neighboring points (`spline_length`) and draws itself as a polyline — used for the water surface border but not water-specific itself.
 - `reflection_patch.gd` — a standalone decorative `Polygon2D` reusing `water_body.gdshader` (with `spring_count` left at 0 so the shader's foam logic no-ops) purely for its mirror-reflection effect, for placing a reflective patch anywhere without a real simulated water body. Spawns its own non-physical `floating_debris` instances (with their `PushArea` freed before entering the tree) for decoration.
 
+**Tutorial UI (`scripts/TutorialUi/`, `scenes/TutorialUi/tutorial_ui.tscn`)**
+A one-shot intro overlay instanced directly into a level scene (see `TutorialUi` node in `scenes/Map/level_1.tscn`).
+- `tutorial_1.gd` (root `CanvasLayer`, `process_mode = Always`) hides itself, waits 1.5s, then shows and pauses the tree — a delayed-intro popup.
+- `tutorial_nine_patch_rect.gd` sizes a `NinePatchRect` to fit its `MarginContainer` content and re-centers it in the viewport whenever that content resizes (`_fit_to_content`/`_center`), so the panel auto-fits its text instead of being manually sized.
+- `tutorial_1_button.gd` drives a two-step "Next"/"Ok" button: first press swaps `IntroText` for `WalkTutorial` (movement key prompts using `assets/ui/keyboard_*.png` inline images), second press hides the whole tutorial and unpauses.
+- Follow this pattern (delayed-show `CanvasLayer` + self-fitting `NinePatchRect` + step-driven button) for future one-shot tutorial popups rather than building a new popup system.
+
 **Dock / Market UI (`scripts/Map/`, `scenes/Map/market_ui.tscn`)**
 `market_ui.tscn` is a self-contained scene instanced into `dock_1.tscn` (as `MarketUI`), replacing what used to be a bare `EnterMarket` Area2D node living directly in the dock scene. Node structure:
 ```
@@ -79,14 +86,15 @@ MarketUi (Node2D)
     └── PanelContainer2 → MarginContainer
         ├── TextureRect (background image, e.g. assets/map/city_img.jpeg)
         └── VBoxContainer
-            ├── Button ("Market")   — unwired stub
-            ├── Button2 ("Quest")   — unwired stub
-            ├── Button3 ("Workshop") — unwired stub
+            ├── Button ("Market")   — wired to CanvasLayer._on_button_pressed
+            ├── Button2 ("Quest")   — wired to CanvasLayer._on_button_2_pressed
+            ├── Button3 ("Workshop") — wired to CanvasLayer._on_button_3_pressed
             └── Button4 ("Exit")    — wired to CanvasLayer._on_button_4_pressed
 ```
+Sibling panels under `CanvasLayer` (all start hidden in `_ready`): `DockMenu` (the button list above), `Shop`, `Quests`, `Workshop`, plus a shared `BackButton`.
 - `dock_1_enter_market.gd` (on `area2d`) tracks `player_inside` via `_on_body_entered/exited` (checks `body is CharacterBody2D`), shows the "press E" `Label` on enter, and on `interact` (via `_unhandled_input`) shows the `@export var ui: CanvasLayer` (wired in the Inspector to the sibling `CanvasLayer`) and pauses the tree (`get_tree().paused = true`).
-- `dock_ui.gd` (on `CanvasLayer`) closes itself and unpauses on `interact` (while `visible`) or via the Exit button (`_on_button_4_pressed`), calling `get_viewport().set_input_as_handled()` so the `interact` press doesn't leak through while paused.
-- Only "Exit" is functional — "Market"/"Quest"/"Workshop" buttons have no signal connections yet; wire them up rather than adding new buttons when building out those panels.
+- `dock_ui.gd` (on `CanvasLayer`) is a simple panel switcher: `_on_button_pressed`/`_on_button_2_pressed`/`_on_button_3_pressed` hide `DockMenu` and show `Shop`/`Quests`/`Workshop` respectively (and show `BackButton`), `_on_back_button_pressed` reverses that back to `DockMenu`, and `_on_button_4_pressed` (Exit) hides every panel, hides itself, unpauses, and calls `get_viewport().set_input_as_handled()` so the `interact` press doesn't leak through while paused. `interact` while `visible` also closes it the same way as Exit.
+- "Market"/"Quest"/"Workshop" now just swap to placeholder panels (`Shop`/`Quests`/`Workshop`) with a Back button — no real shop/quest/workshop content yet. Follow this show/hide-panel + Back-button pattern when building those out rather than introducing a new navigation scheme.
 - Follow this scene's pattern (self-contained scene: entry-trigger Area2D + Label + pausing CanvasLayer UI, instanced into the map scene) for future dock/UI entry points rather than adding loose Area2D nodes to map scenes directly.
 
 ## Input actions (`project.godot` → `[input]`)
@@ -95,7 +103,7 @@ MarketUi (Node2D)
 
 ## Physics layers (`project.godot` → `[layer_names]`)
 
-`1=world`, `2=player`, `3=object`, `4=hook`, `5=water`, `6=boat_interior` — respect these when setting `collision_layer`/`collision_mask` on new bodies.
+`1=world`, `2=player`, `3=object`, `4=hook`, `5=water`, `6=boat_interior`, `7=dock`, `8=boat`, `9=boundary` — respect these when setting `collision_layer`/`collision_mask` on new bodies.
 
 ## Gotchas seen in existing code
 
@@ -103,3 +111,4 @@ MarketUi (Node2D)
 - Two independent buoyancy implementations exist (`scripts/Water/buoyant_object.gd` for general objects, `scripts/Boat/buoyancy2.gd` for the boat) — check which one a scene actually uses before tuning water-force constants.
 - `trajectory.gd` still contains an unused `throw()` method and a commented-out call site; the real grapple-hook throw path is `line_hook.gd`'s own `_input` handler.
 - `cargo_weight.gd` has a leftover `print(boat.mass)` debug statement in `_recalculate()`.
+- `camera_pan.gd`'s `clamp_offset_to_limits` derives its offset bounds from a camera-center position (`cam_center`, itself clamped by `half_view`) rather than raw player position, matching Godot's built-in camera clamp — don't reintroduce raw `player_pos` into the `min_offset`/`max_offset` math or the offset clamp will disagree with the engine's own limit clamp.
