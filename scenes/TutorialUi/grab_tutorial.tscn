@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://54a3e8q0rawe"]
+
+[ext_resource type="Script" uid="uid://4fi3qbwv6ifp" path="res://scripts/TutorialUi/grab_tutorial.gd" id="1_74j1d"]
+[ext_resource type="Texture2D" uid="uid://bnca75vguafaq" path="res://assets/ui/MediavelFree.png" id="1_pm28m"]
+[ext_resource type="Script" uid="uid://cuhgefthklp3m" path="res://scripts/TutorialUi/tutorial_nine_patch_rect.gd" id="2_74j1d"]
+[ext_resource type="Script" uid="uid://wmg7snlfoskp" path="res://scripts/TutorialUi/grab_tutorial_button.gd" id="3_pm28m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(72, 188)
+
+[node name="GrabTutorial" type="Node2D" unique_id=1727164302]
+script = ExtResource("1_74j1d")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1057216306]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2137957497]
+shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1462491103]
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer" unique_id=1558775942]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_pm28m")
+region_rect = Rect2(3, 21, 72, 72)
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+script = ExtResource("2_74j1d")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/NinePatchRect" unique_id=918974495]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/NinePatchRect/MarginContainer" unique_id=1551692773]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IntroText" type="RichTextLabel" parent="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1536272234]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "Press [img=64x64]res://assets/ui/keyboard_f.png[/img] near objects to garb them"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1857172995]
+layout_mode = 2
+text = "Next"
+script = ExtResource("3_pm28m")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="pressed" from="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer/Button" to="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer/Button" method="_on_pressed"]

@@ -2,23 +2,15 @@ extends Button
 
 @onready var root = owner
 @onready var intro_text: RichTextLabel = $"../IntroText"
-@onready var walk_tutorial: RichTextLabel = $"../WalkTutorial"
 
 var clicked: int = 0
 
-func _ready() -> void:
-	walk_tutorial.hide()
-
-
 func _on_pressed() -> void:
 	if clicked == 0:
-		intro_text.hide()
-		walk_tutorial.show()
+		intro_text.text = "Press [img=32x32]res://assets/ui/keyboard_d.png[/img] / [img=32x32]res://assets/ui/keyboard_a.png[/img] to move Left / Right"
 		text = "Ok"
 		clicked += 1
 	elif clicked == 1:
-		intro_text.hide()
-		walk_tutorial.hide()
 		root.hide()
 		get_tree().paused = false
 		clicked += 1

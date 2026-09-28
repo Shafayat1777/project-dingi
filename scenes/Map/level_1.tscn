@@ -7,9 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://o710o63tf37d" path="res://scenes/Map/dock_1.tscn" id="3_nwlqg"]
 [ext_resource type="PackedScene" uid="uid://m6d5ugkostkw" path="res://scenes/Throwable/debris.tscn" id="4_utspt"]
 [ext_resource type="PackedScene" uid="uid://ddp25awxgllci" path="res://scenes/Boat/boat.tscn" id="5_0b1c0"]
-[ext_resource type="PackedScene" uid="uid://cvrsvghtmk4gi" path="res://scenes/Throwable/broken_plank.tscn" id="6_h5iwp"]
 [ext_resource type="PackedScene" uid="uid://bupu1w4ok61pi" path="res://scenes/Items/lever.tscn" id="7_up3t7"]
 [ext_resource type="PackedScene" uid="uid://qk8886wrh0ap" path="res://scenes/TutorialUi/tutorial_ui.tscn" id="10_gfs78"]
+[ext_resource type="PackedScene" uid="uid://due28gy7i471h" path="res://scenes/TutorialUi/jump_tutorial.tscn" id="11_int6t"]
+[ext_resource type="PackedScene" uid="uid://bvn6psuke8k3g" path="res://scenes/Map/kill_zone_1.tscn" id="12_7wy07"]
+[ext_resource type="PackedScene" uid="uid://54a3e8q0rawe" path="res://scenes/TutorialUi/grab_tutorial.tscn" id="12_b6g2n"]
+[ext_resource type="PackedScene" uid="uid://cfnlntk63ere1" path="res://scenes/TutorialUi/object_kill_zone.tscn" id="14_fpexc"]
+[ext_resource type="PackedScene" uid="uid://ce2p08qmy5vb7" path="res://scenes/TutorialUi/hook_tutorial.tscn" id="14_l2ni1"]
+[ext_resource type="PackedScene" uid="uid://d2ingilbcjpis" path="res://scenes/TutorialUi/swing_tutorial.tscn" id="15_l2ni1"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_6f4wy"]
 a = Vector2(36, -83)
@@ -531,7 +536,7 @@ position = Vector2(7872, 328)
 position = Vector2(11183, 474)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
-position = Vector2(354, 409)
+position = Vector2(4111, 439)
 
 [node name="Water_Body" parent="." unique_id=18857598 groups=["water"] instance=ExtResource("3_lxnil")]
 position = Vector2(8121, 543)
@@ -543,16 +548,58 @@ moss_count = 35
 petal_count = 50
 debris_depth_range = Vector2(0, 200)
 
-[node name="Broken-Plank" parent="." unique_id=840583650 instance=ExtResource("6_h5iwp")]
-position = Vector2(7781, 312)
-
 [node name="Debris" parent="." unique_id=1187859604 instance=ExtResource("4_utspt")]
-position = Vector2(2028, 434)
+position = Vector2(2218, 482)
 
 [node name="Debris2" parent="." unique_id=905567918 instance=ExtResource("4_utspt")]
-position = Vector2(2122, 503)
+position = Vector2(2381, 525)
 
-[node name="Debris3" parent="." unique_id=1008816604 instance=ExtResource("4_utspt")]
-position = Vector2(3631, 483)
+[node name="Debris3" parent="." unique_id=1051472342 instance=ExtResource("4_utspt")]
+position = Vector2(2545, 536)
 
 [node name="TutorialUi" parent="." unique_id=848580824 instance=ExtResource("10_gfs78")]
+
+[node name="JumpTutorial" parent="." unique_id=478002574 instance=ExtResource("11_int6t")]
+position = Vector2(974, 468)
+
+[node name="GrabTutorial" parent="." unique_id=1727164302 instance=ExtResource("12_b6g2n")]
+position = Vector2(2082, 498)
+
+[node name="Spawn-1" type="Marker2D" parent="." unique_id=1815305129]
+position = Vector2(819, 491)
+
+[node name="Spawn-2" type="Marker2D" parent="." unique_id=558710913]
+position = Vector2(4381, 467)
+
+[node name="Spawn-3" type="Marker2D" parent="." unique_id=8967506]
+position = Vector2(5884, 495)
+
+[node name="KillZone1" parent="." unique_id=347202193 node_paths=PackedStringArray("spawn") instance=ExtResource("12_7wy07")]
+position = Vector2(1183, 829)
+spawn = NodePath("../Spawn-1")
+
+[node name="KillZone2" parent="." unique_id=717504611 node_paths=PackedStringArray("spawn") instance=ExtResource("12_7wy07")]
+position = Vector2(4671, 817)
+spawn = NodePath("../Spawn-2")
+
+[node name="KillZone3" parent="." unique_id=1118978438 node_paths=PackedStringArray("spawn") instance=ExtResource("12_7wy07")]
+position = Vector2(6322, 822)
+spawn = NodePath("../Spawn-3")
+
+[node name="ObjectKillZone" parent="." unique_id=1958204587 node_paths=PackedStringArray("spawn") instance=ExtResource("14_fpexc")]
+position = Vector2(2589, 401)
+spawn = NodePath("../ObjectSpawner")
+
+[node name="ObjectKillZone2" parent="." unique_id=1737154757 node_paths=PackedStringArray("spawn") instance=ExtResource("14_fpexc")]
+position = Vector2(1186, 789)
+rotation = 1.5707964
+spawn = NodePath("../ObjectSpawner")
+
+[node name="ObjectSpawner" type="Marker2D" parent="." unique_id=2133724851]
+position = Vector2(2368, 470)
+
+[node name="HookTutorial" parent="." unique_id=1155458796 instance=ExtResource("14_l2ni1")]
+position = Vector2(3107, 494)
+
+[node name="SwingTutorial" parent="." unique_id=1934467772 instance=ExtResource("15_l2ni1")]
+position = Vector2(4286, 503)

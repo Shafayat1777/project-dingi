@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://d2ingilbcjpis"]
+
+[ext_resource type="Script" uid="uid://mob1k6hmb885" path="res://scripts/TutorialUi/swing_tutorial.gd" id="1_1cbph"]
+[ext_resource type="Texture2D" uid="uid://bnca75vguafaq" path="res://assets/ui/MediavelFree.png" id="2_bi0na"]
+[ext_resource type="Script" uid="uid://cuhgefthklp3m" path="res://scripts/TutorialUi/tutorial_nine_patch_rect.gd" id="3_1l0n3"]
+[ext_resource type="Script" uid="uid://crl3t08icx5x2" path="res://scripts/TutorialUi/swing_tutorial_button.gd" id="4_1cbph"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
+size = Vector2(72, 188)
+
+[node name="SwingTutorial" type="Node2D" unique_id=1727164302]
+script = ExtResource("1_1cbph")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1057216306]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2137957497]
+shape = SubResource("RectangleShape2D_6f4wy")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1462491103]
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer" unique_id=1558775942]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_bi0na")
+region_rect = Rect2(3, 21, 72, 72)
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+script = ExtResource("3_1l0n3")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/NinePatchRect" unique_id=918974495]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/NinePatchRect/MarginContainer" unique_id=1551692773]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IntroText" type="RichTextLabel" parent="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1536272234]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=614505680]
+layout_mode = 2
+script = ExtResource("4_1cbph")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="pressed" from="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer/Button" to="CanvasLayer/NinePatchRect/MarginContainer/VBoxContainer/Button" method="_on_pressed"]

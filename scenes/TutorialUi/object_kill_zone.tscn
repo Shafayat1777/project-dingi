@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cfnlntk63ere1"]
+
+[ext_resource type="Script" uid="uid://b82ss08rhvd5b" path="res://scripts/TutorialUi/object_kill_zone.gd" id="1_yjrdk"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_6f4wy"]
+
+[node name="ObjectKillZone" type="Area2D" unique_id=1958204587]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_yjrdk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=126683146]
+rotation = -1.5707964
+shape = SubResource("WorldBoundaryShape2D_6f4wy")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
