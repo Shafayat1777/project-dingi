@@ -12,13 +12,14 @@
 [ext_resource type="PackedScene" uid="uid://due28gy7i471h" path="res://scenes/TutorialUi/jump_tutorial.tscn" id="11_int6t"]
 [ext_resource type="PackedScene" uid="uid://bvn6psuke8k3g" path="res://scenes/Map/kill_zone_1.tscn" id="12_7wy07"]
 [ext_resource type="PackedScene" uid="uid://54a3e8q0rawe" path="res://scenes/TutorialUi/grab_tutorial.tscn" id="12_b6g2n"]
+[ext_resource type="PackedScene" uid="uid://cau7uea82cpt5" path="res://scenes/Map/water_kill_zone.tscn" id="14_5d2oq"]
 [ext_resource type="PackedScene" uid="uid://cfnlntk63ere1" path="res://scenes/TutorialUi/object_kill_zone.tscn" id="14_fpexc"]
 [ext_resource type="PackedScene" uid="uid://ce2p08qmy5vb7" path="res://scenes/TutorialUi/hook_tutorial.tscn" id="14_l2ni1"]
 [ext_resource type="PackedScene" uid="uid://d2ingilbcjpis" path="res://scenes/TutorialUi/swing_tutorial.tscn" id="15_l2ni1"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_6f4wy"]
-a = Vector2(36, -83)
-b = Vector2(35, 868)
+a = Vector2(36, -488)
+b = Vector2(20, 1653)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gfs78"]
 texture = ExtResource("2_e15cp")
@@ -500,12 +501,21 @@ sources/2 = SubResource("TileSetAtlasSource_gfs78")
 
 [node name="Level-1" type="Node2D" unique_id=856254173]
 
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=865449124]
+[node name="InvisWall" type="StaticBody2D" parent="." unique_id=865449124]
 position = Vector2(-23, -2)
 collision_layer = 256
 collision_mask = 134
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1260067514]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InvisWall" unique_id=1260067514]
+shape = SubResource("SegmentShape2D_6f4wy")
+
+[node name="InvusWall2" type="StaticBody2D" parent="." unique_id=1024684739]
+position = Vector2(11904, 37)
+collision_layer = 256
+collision_mask = 134
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InvusWall2" unique_id=956905766]
+position = Vector2(-428, 53)
 shape = SubResource("SegmentShape2D_6f4wy")
 
 [node name="Parallax-Background" parent="." unique_id=405190732 instance=ExtResource("1_7pyal")]
@@ -533,10 +543,10 @@ position = Vector2(10229, 436)
 position = Vector2(7872, 328)
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("5_0b1c0")]
-position = Vector2(11183, 474)
+position = Vector2(8431, 366)
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
-position = Vector2(4111, 439)
+position = Vector2(169, 503)
 
 [node name="Water_Body" parent="." unique_id=18857598 groups=["water"] instance=ExtResource("3_lxnil")]
 position = Vector2(8121, 543)
@@ -594,6 +604,18 @@ spawn = NodePath("../ObjectSpawner")
 position = Vector2(1186, 789)
 rotation = 1.5707964
 spawn = NodePath("../ObjectSpawner")
+
+[node name="WaterKillZone" parent="." unique_id=163645284 node_paths=PackedStringArray("spawn", "boatspawn", "boat") instance=ExtResource("14_5d2oq")]
+position = Vector2(15063, 822)
+spawn = NodePath("../Spawn-4")
+boatspawn = NodePath("../Boat Spawn")
+boat = NodePath("../Boat")
+
+[node name="Spawn-4" type="Marker2D" parent="." unique_id=560406465]
+position = Vector2(8023, 292)
+
+[node name="Boat Spawn" type="Marker2D" parent="." unique_id=1775899834]
+position = Vector2(8428, 386)
 
 [node name="ObjectSpawner" type="Marker2D" parent="." unique_id=2133724851]
 position = Vector2(2368, 470)

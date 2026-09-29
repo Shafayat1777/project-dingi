@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://cv4m7kv8bksn8"]
+
+[ext_resource type="Script" uid="uid://onx0qitouav6" path="res://scripts/Global/main_menue.gd" id="1_flaqr"]
+[ext_resource type="Texture2D" uid="uid://wi463ckmc4bx" path="res://assets/main_menu.jpeg" id="2_rdsvh"]
+[ext_resource type="Texture2D" uid="uid://dt7aymhhqcj7u" path="res://assets/ui/New game Button.png" id="3_h45mk"]
+[ext_resource type="Texture2D" uid="uid://c2r0ih5stx7eo" path="res://assets/ui/New Game  col_Button.png" id="4_ik21x"]
+[ext_resource type="Texture2D" uid="uid://cjk4p2n8vqn5c" path="res://assets/ui/Options Button.png" id="4_lc8rc"]
+[ext_resource type="Texture2D" uid="uid://dcx02264s4ow" path="res://assets/ui/Resume Button.png" id="5_8q1xl"]
+[ext_resource type="Texture2D" uid="uid://cao0p7s0bf1vc" path="res://assets/ui/Quit Button.png" id="5_ijocf"]
+[ext_resource type="Texture2D" uid="uid://bafgn7akg4fvo" path="res://assets/ui/Options  col_Button.png" id="6_1j7bk"]
+[ext_resource type="Texture2D" uid="uid://re7owegljq6c" path="res://assets/ui/Resume  col_Button.png" id="6_krx3d"]
+[ext_resource type="Texture2D" uid="uid://bsyq44gsa06p2" path="res://assets/ui/Quit  col_Button.png" id="8_8q1xl"]
+[ext_resource type="Script" uid="uid://bs3j6e0m6pjl0" path="res://scripts/Global/check_button.gd" id="11_krx3d"]
+
+[node name="Main Menue" type="Node2D" unique_id=117350330]
+script = ExtResource("1_flaqr")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1198459724]
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=964021625]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/PanelContainer" unique_id=590309226]
+layout_mode = 2
+texture = ExtResource("2_rdsvh")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer" unique_id=526440497]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=121925056]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.5
+
+[node name="Button Manager" type="VBoxContainer" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=789502086]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.22
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="New Game" type="TextureButton" parent="CanvasLayer/PanelContainer/VBoxContainer/Button Manager" unique_id=1958115655]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+texture_normal = ExtResource("3_h45mk")
+texture_hover = ExtResource("4_ik21x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Resume" type="TextureButton" parent="CanvasLayer/PanelContainer/VBoxContainer/Button Manager" unique_id=966142346]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+texture_normal = ExtResource("5_8q1xl")
+texture_hover = ExtResource("6_krx3d")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Options" type="TextureButton" parent="CanvasLayer/PanelContainer/VBoxContainer/Button Manager" unique_id=1657504771]
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+texture_normal = ExtResource("4_lc8rc")
+texture_hover = ExtResource("6_1j7bk")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Quit" type="TextureButton" parent="CanvasLayer/PanelContainer/VBoxContainer/Button Manager" unique_id=1966781722]
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+texture_normal = ExtResource("5_ijocf")
+texture_hover = ExtResource("8_8q1xl")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="CheckButton" type="CheckButton" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=1843262475]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+text = "Full Screen"
+script = ExtResource("11_krx3d")
+
+[connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/New Game" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/Quit" to="." method="_on_quit_pressed"]
+[connection signal="toggled" from="CanvasLayer/PanelContainer/VBoxContainer/CheckButton" to="CanvasLayer/PanelContainer/VBoxContainer/CheckButton" method="_on_toggled"]
