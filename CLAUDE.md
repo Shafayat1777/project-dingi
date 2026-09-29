@@ -16,6 +16,8 @@ godot --path .
 
 There is no automated test suite; verification is done by running the game in the editor and manually exercising the mechanic being changed.
 
+The project's main scene (`run/main_scene`) is `scenes/Global/main_menue.tscn`, not a level — running the project starts at the main menu, and "New Game" loads `scenes/Map/level_1.tscn`. Open/run `level_1.tscn` directly in the editor (F6) to skip the menu while testing. `export_presets.cfg` defines a single "Windows Desktop" export preset (output `../../Dingi.exe`, i.e. outside the repo).
+
 ## Before writing code
 
 Before implementing anything new, search `scripts/` and `scenes/` for an existing feature folder or script that does something similar (e.g. another throwable, another physics body, another UI prompt) and follow its structure/conventions rather than inventing a new pattern. This codebase is small and consistent by design — new code should look like it was written by the same person who wrote the rest of it.
@@ -25,7 +27,7 @@ Before implementing anything new, search `scripts/` and `scenes/` for an existin
 **Scenes (`scenes/`) + Scripts (`scripts/`) are split** and mirror each other by feature folder (`Boat`, `Character`, `Map`, `Throwable`, `Items`, `Global`, `Water`). A `.tscn` defines node structure; the paired `.gd` (same base name) holds behavior. `.uid` files alongside scripts are Godot's internal resource IDs — don't hand-edit them.
 
 **Global singleton — `HeldItemManager` (`scripts/Global/HeldItemManager.gd`)**
-Autoloaded (see `[autoload]` in `project.godot`). Just shared state: `held_item` (`RigidBody2D`) and `is_held` (`bool`). It holds no logic itself — pickup/drop/throw behavior lives per-item in `GrabObject` (below), which reads and writes these fields so only one thing can be held globally at a time.
+Autoloaded (see `[autoload]` in `project.godot`; the only other autoload is `PauseMenue`, covered under Main menu below). Just shared state: `held_item` (`RigidBody2D`) and `is_held` (`bool`). It holds no logic itself — pickup/drop/throw behavior lives per-item in `GrabObject` (below), which reads and writes these fields so only one thing can be held globally at a time.
 
 **Pickup/carry system is item-side, not player-side (`scripts/Global/`)**
 - `grab_object.gd` (`class_name GrabObject`) is attached to each pickupable `RigidBody2D` itself (as a child `Node2D`), not to the player. It polls `pickup`/`drop`/`shoot` input every `_physics_process` and only acts if the player is within range (tracked via a `Pickable-Position` `Marker2D` handed to it by a proximity signal) and `HeldItemManager.is_held` allows it. `pick_up()` reparents the object onto the target marker and zeroes its collision layer/mask (saved for restore); `drop()`/`throw()` reparent it back to the current scene, restore collision, and give it a velocity (a fixed toss for drop, aimed at the mouse for throw).
@@ -68,18 +70,29 @@ Spring-mesh water (Van der Windrift-style) driving both visuals and buoyancy:
 - `smooth_path_modified.gd` (`class_name SmoothPathModified`) is a generic `Path2D` subclass that auto-computes smooth in/out tangents from neighboring points (`spline_length`) and draws itself as a polyline — used for the water surface border but not water-specific itself.
 - `reflection_patch.gd` — a standalone decorative `Polygon2D` reusing `water_body.gdshader` (with `spring_count` left at 0 so the shader's foam logic no-ops) purely for its mirror-reflection effect, for placing a reflective patch anywhere without a real simulated water body. Spawns its own non-physical `floating_debris` instances (with their `PushArea` freed before entering the tree) for decoration.
 
+**Main menu / pause menu (`scripts/Global/`, `scenes/Global/main_menue.tscn`)**
+One scene doubles as both the title screen and the in-game pause menu (note the project-wide "menue" spelling in file/node names — keep it consistent rather than "fixing" it in one place):
+- `pause_menue.gd` — second autoload, registered as `PauseMenue` in `project.godot`. `process_mode = Always`; on the `pause` action (Esc) in `_unhandled_input` it toggles `open_menu()`/`close_menu()`. `open_menu()` instantiates `main_menue.tscn` (preloaded as `MAIN_MENU`) with `process_mode = Always`, adds it to `get_tree().root` on top of the running level, sets `pause_menu = true`, and pauses the tree; `close_menu()` frees it and unpauses. Also holds shared state `full_screen` so the fullscreen toggle survives the menu being freed/reinstanced.
+- `main_menue.gd` (root `Node2D` of `main_menue.tscn`) — in `_ready` shows "New Game" or "Resume" depending on `PauseMenue.pause_menu` (buttons fetched via `%` unique names), so the same scene reads as a title screen at startup and a pause menu in-game. Buttons are `TextureButton`s using `assets/ui/* Button.png` (normal) / `*  col_Button.png` (hover) pairs. "New Game" → `change_scene_to_file(level_1.tscn)`, "Resume" → `PauseMenue.close_menu()`, "Quit" → `get_tree().quit()`. "Options" is a placeholder that currently also just loads `level_1.tscn`.
+- `check_button.gd` — the "Full Screen" `CheckButton` in the menu; syncs from/to `PauseMenue.full_screen` and calls `DisplayServer.window_set_mode(FULLSCREEN/WINDOWED)`.
+
 **Tutorial UI (`scripts/TutorialUi/`, `scenes/TutorialUi/*.tscn`)**
 One-shot intro/skill popups instanced directly into a level scene (see `TutorialUi`, `JumpTutorial`, `GrabTutorial`, `HookTutorial`, `SwingTutorial` nodes in `scenes/Map/level_1.tscn`). Two flavors:
 - **Delayed intro popup** — `tutorial_ui.tscn` / `tutorial_1.gd`: root `CanvasLayer` (`process_mode = Always`) hides itself, waits 1.5s, then shows and pauses the tree. `tutorial_1_button.gd` now drives a single-step "Next"→"Ok" button (movement key prompt only, `IntroText` set directly — the old separate `WalkTutorial` label node was removed from the scene).
 - **Trigger-zone skill popups** (`jump_tutorial.gd`, `grab_tutorial.gd`, `hook_tutorial.gd`, `swing_tutorial.gd`, all identical): root `Node2D` with a child `CanvasLayer` (hidden in `_ready`) and an `Area2D`; `process_mode = Node.PROCESS_MODE_WHEN_PAUSED` so the zone still detects the player while another popup has already paused the tree. On `_on_area_2d_body_entered`, if `body is CharacterBody2D` and it hasn't already fired (`body_passed` guard, one-shot), shows the `CanvasLayer` and pauses. Each has a paired `*_button.gd` on the panel's Next/Ok `Button` driving a `click_count`-indexed sequence of `intro_text` (`RichTextLabel`) strings (bbcode + inline `res://assets/ui/keyboard_*.png`/`mouse_*.png` images), ending on "Ok" which hides `root` + `root.get_node('CanvasLayer')` and unpauses.
 - `tutorial_nine_patch_rect.gd` sizes a `NinePatchRect` to fit its `MarginContainer` content and re-centers it in the viewport whenever that content resizes (`_fit_to_content`/`_center`), so the panel auto-fits its text instead of being manually sized — shared by all the popups above.
+- `jump_tutorial_button.gd` sets its first `intro_text` string in its own `_ready()` (via an `@onready` reference to the sibling `IntroText`) rather than leaving it baked into the `.tscn` — edit the popup's opening text in the script, not the scene.
 - Follow the trigger-zone pattern (per-skill `Node2D` + `Area2D` + self-fitting `NinePatchRect` + `click_count`-driven button script, one-shot via `body_passed`) for future skill-intro popups; reserve the delayed-show pattern for the game's opening intro only.
 
-**Kill zones / respawn (`scripts/Map/kill_zone_1.gd`, `scripts/TutorialUi/object_kill_zone.gd`)**
-Both are plain `Area2D`s (no scene-graph relation to the tutorial system despite one living under `scripts/TutorialUi/`) that reset something falling out of bounds back to a `Marker2D`:
+**Kill zones / respawn (`scripts/Map/kill_zone_1.gd`, `scripts/Map/water_kill_zone.gd`, `scripts/TutorialUi/object_kill_zone.gd`)**
+All are plain `Area2D`s (no scene-graph relation to the tutorial system despite one living under `scripts/TutorialUi/`) that reset something falling out of bounds back to a `Marker2D`:
 - `kill_zone_1.gd` — for the player: on `_on_body_entered` with a `CharacterBody2D`, starts a `Timer` (delay before respawn) which on timeout snaps `character.position`/`velocity` to the `@export var spawn: Marker2D`. Used in `level_1.tscn` as `KillZone1`/`KillZone2`/`KillZone3`, each wired to its own `Spawn-N` marker placed just above it.
+- `water_kill_zone.gd` (`scenes/Map/water_kill_zone.tscn`, a long thin `Area2D` masked to the player layer) — player-falls-in-water variant of `kill_zone_1.gd`: same `Timer`-delayed respawn to `spawn`, but additionally resets an `@export var boat: RigidBody2D` to `@export var boatspawn: Marker2D` (via `set_deferred` on `global_position`/velocities) so the player and boat are put back together. Used in `level_1.tscn` as `WaterKillZone` → `Spawn-4` / `Boat Spawn`.
 - `object_kill_zone.gd` — for dropped/thrown `RigidBody2D`s: on `_on_body_entered`, immediately (`set_deferred`, no timer) teleports the body to `@export var spawn: Marker2D` and zeroes its linear/angular velocity, so a thrown object that falls off the level respawns at a shared `ObjectSpawner` marker instead of being lost. Used as `ObjectKillZone`/`ObjectKillZone2` in `level_1.tscn`, both pointing at the same `ObjectSpawner`.
-- New instant-death or fall-out-of-bounds areas should reuse one of these two scripts (player vs. object) rather than writing new respawn logic.
+- New instant-death or fall-out-of-bounds areas should reuse one of these scripts (player, player+boat, or object) rather than writing new respawn logic.
+
+**Level bounds (`scenes/Map/level_1.tscn`)**
+`InvisWall` / `InvusWall2` are `StaticBody2D`s with a tall `SegmentShape2D` on the `boundary` layer (9), placed at the level's left and right edges. The player and boat masks include `boundary` (the boat's `collision_mask` is `world | object | boundary`), so both are stopped at the level edges. Add new edge walls the same way rather than with tile collision.
 
 **Dock / Market UI (`scripts/Map/`, `scenes/Map/market_ui.tscn`)**
 `market_ui.tscn` is a self-contained scene instanced into `dock_1.tscn` (as `MarketUI`), replacing what used to be a bare `EnterMarket` Area2D node living directly in the dock scene. Node structure:
@@ -105,7 +118,7 @@ Sibling panels under `CanvasLayer` (all start hidden in `_ready`): `DockMenu` (t
 
 ## Input actions (`project.godot` → `[input]`)
 
-`shoot`, `aim`, `grab`, `pickup`, `drop`, `left`, `right`, `jump`, `climb_up`, `climb_down`, `interact` — defined in `project.godot`, not in code. Check this section before adding new bindings rather than hardcoding keycodes in scripts.
+`shoot`, `aim`, `grab`, `pickup`, `drop`, `left`, `right`, `jump`, `climb_up`, `climb_down`, `interact`, `pause` (Esc, handled by the `PauseMenue` autoload) — defined in `project.godot`, not in code. Check this section before adding new bindings rather than hardcoding keycodes in scripts.
 
 ## Physics layers (`project.godot` → `[layer_names]`)
 
