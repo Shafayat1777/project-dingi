@@ -18,6 +18,23 @@ There is no automated test suite; verification is done by running the game in th
 
 The project's main scene (`run/main_scene`) is `scenes/Global/main_menue.tscn`, not a level — running the project starts at the main menu, and "New Game" loads `scenes/Map/level_1.tscn`. Open/run `level_1.tscn` directly in the editor (F6) to skip the menu while testing. `export_presets.cfg` defines a single "Windows Desktop" export preset (output `../../Dingi.exe`, i.e. outside the repo).
 
+## Detailed docs (`docs/`)
+
+Per-scene/system reference docs live in `docs/`. Each has the node tree, physics layers, script-by-script behavior, gotchas, and a full-source appendix. **Read the relevant doc before changing or extending that scene**; the sections below are only summaries. If code and a doc disagree, trust the code and fix the doc.
+
+| Doc | Covers |
+|---|---|
+| `docs/character_scene.md` | Player `CharacterBody2D`, movement/swing mode, camera pan, aim preview, animations |
+| `docs/line_hook_scene.md` | Grappling hook (`scripts/HookRope/*`), state machine, swing/reel/tow physics, verlet rope |
+| `docs/boat_scene.md` | Boat body, mount/dismount, rowing, buoyancy, cargo mass, outline shader |
+| `docs/debris_scene.md` | Pickable Debris (`scenes/Throwable/debris.tscn`) and decorative Floating Debris (water) |
+| `docs/project_settings.md` | `project.godot` decoded: input map, physics layers, resolution/stretch, autoloads, export preset |
+| `docs/DOC_FORMAT.md` | Required structure/style for writing any new doc in `docs/` — follow it when asked to document a scene |
+
+Not yet documented (read the scripts directly): water simulation, main/pause menu, tutorial popups, dock/market UI, kill zones, lever, ropes. When you document one, follow `docs/DOC_FORMAT.md` and add it to this table.
+
+`scratchpad/` holds older design notes for the water/buoyancy work (`buoyancy_redesign.md`, `buoyancy_launch_bug_fix.md`, `water_changes_log.md`); they are history, not current spec.
+
 ## Before writing code
 
 Before implementing anything new, search `scripts/` and `scenes/` for an existing feature folder or script that does something similar (e.g. another throwable, another physics body, another UI prompt) and follow its structure/conventions rather than inventing a new pattern. This codebase is small and consistent by design — new code should look like it was written by the same person who wrote the rest of it.
@@ -32,32 +49,39 @@ Autoloaded (see `[autoload]` in `project.godot`; the only other autoload is `Pau
 **Pickup/carry system is item-side, not player-side (`scripts/Global/`)**
 - `grab_object.gd` (`class_name GrabObject`) is attached to each pickupable `RigidBody2D` itself (as a child `Node2D`), not to the player. It polls `pickup`/`drop`/`shoot` input every `_physics_process` and only acts if the player is within range (tracked via a `Pickable-Position` `Marker2D` handed to it by a proximity signal) and `HeldItemManager.is_held` allows it. `pick_up()` reparents the object onto the target marker and zeroes its collision layer/mask (saved for restore); `drop()`/`throw()` reparent it back to the current scene, restore collision, and give it a velocity (a fixed toss for drop, aimed at the mouse for throw).
 - `proximity_highlight.gd` (`class_name InteractionPrompt`) is an `Area2D` also attached per-item; it shows a floating `Label` ("Press E to interact" by default) and toggles an outline shader on the item's `Sprite2D` when the player enters range, and feeds `GrabObject` the `Pickable-Position` marker via `_on_proximity_highlight_body_entered/exited` signals wired in the item's scene. The label is `top_level = true` and repositioned every `_process` from a fixed world-space offset computed once in `_calculate_offset()`, so it stays upright and centered regardless of the item's own rotation/flip.
-- Any new pickupable object should get both scripts attached (see `scenes/movable_object.tscn` or `scenes/Throwable/*.tscn` for the pattern), not a copy of player-side grab logic.
+- Any new pickupable object should get both scripts attached (see `scenes/Throwable/debris.tscn` or `broken_plank.tscn` for the pattern; details in `docs/debris_scene.md`), not a copy of player-side grab logic. `scenes/movable_object.tscn` is *not* a pickup example: it is a bare `Node2D` wrapping a `RigidBody2D` (icon sprite) with no grab/highlight scripts. The `pickup` key is **F** and `drop` is **G**.
 
-**Player (`scripts/character/`)**
+**Player (`scripts/character/`, `scenes/Character/character.tscn`)** — see `docs/character_scene.md`. The Character scene also contains the `Trajectory` aim preview, a `Camera2D` (`camera_pan.gd`), the `Pickable-Position` marker (looked up by name by `GrabObject`), and the `Line-Hook` instance.
 - `character_movement.gd` — `CharacterBody2D` physics movement (accel/friction/jump). Also drives all player→object contact forces from the `move_and_slide()` slide-collision loop: standing on top of a `RigidBody2D` applies a continuous downward force (so floating objects dip/bob instead of just absorbing one impulse), pushing a submerged object (`is_submerged` on the collider) applies a continuous sideways force, and any other side contact applies a one-shot `apply_central_impulse`.
-- `trajectory.gd` — aim-preview line (parabolic trajectory prediction) shown while holding `aim`. Its own `throw()` (spawning `hook_rope_generation.tscn`) is currently dead code (never called — the actual grapple-hook throw is handled independently by `line_hook.gd` on the `shoot` action).
+- `is_swinging` (set by the hook's `SwingController`) switches horizontal control to swing mode (`swing_push_force`, no friction/speed cap).
+- `camera_pan.gd` — right-mouse look-ahead offset, clamped to the camera limits (see Gotchas).
+- `trajectory.gd` — aim-preview line (parabolic trajectory prediction) shown while holding `aim`. It no longer has a `throw()`; only a `pass` placeholder and commented-out call remain (the actual grapple-hook throw is `HookInput` in `scripts/HookRope/`, on the `shoot` action).
 
-**Boat (`scripts/Boat/`, `scenes/Boat/boat.tscn`)**
+**Boat (`scripts/Boat/`, `scenes/Boat/boat.tscn`)** — see `docs/boat_scene.md`.
 A rideable, floating `RigidBody2D` composed of sibling `Node`/`Node2D` components under the boat scene, each owning one concern:
 - `boat.gd` — root script on the boat `RigidBody2D` itself; toggles `linear_damp`/friction depending on `is_on_water` (set externally by `buoyancy2.gd`).
 - `boat_highlight.gd` — listens for the player entering/exiting a detection `Area2D`, shows an outline + "press E" label, and on `interact` calls `BoatMount.mount()`/`dismount()` depending on `boat.is_occupied`.
 - `boat_mount.gd` (`BoatMount`) — the actual mount/dismount logic: reparents the player `CharacterBody2D` onto the boat (disabling its own `CollisionShape2D` and physics process while aboard), positions it at an `ExitMarker` on dismount, and toggles `BoatDriver.set_active()`.
 - `boat_driver.gd` (`BoatDriver`) — only runs while `active` (i.e. while mounted); applies rowing force from `left`/`right` input directly to the boat body, capped at `max_speed`.
 - `cargo_weight.gd` (`CargoWeight`) — tracks `RigidBody2D`s inside a cargo `Area2D` (`_on_cargo_area_body_entered/exited`) and sums their mass onto `base_mass` so a loaded boat rides lower/handles heavier.
-- `buoyancy2.gd` — a second, boat-specific buoyancy implementation (separate from `scripts/Water/buoyant_object.gd`): samples water height at both edges of the collision shape via `water_body.springs`, applies a per-side vertical force scaled by submersion, plus damping and a righting torque, and sets `is_on_water` on the boat body which `boat.gd` reacts to. **Not currently attached to `scenes/Boat/boat.tscn`** — the script exists but no node in the boat scene references it, so the boat presently has no buoyancy and won't float. Wire it onto a node in the boat scene before relying on boat buoyancy behavior.
+- `buoyancy2.gd` — a second, boat-specific buoyancy implementation (separate from `scripts/Water/buoyant_object.gd`): samples water height at both edges of the collision shape via `water_body.springs`, applies a per-side vertical force scaled by submersion, plus damping and a righting torque, and sets `is_on_water` on the boat body which `boat.gd` reacts to. It **is** attached to `boat.tscn` (node `Buoyancy`, `buoyancy_damping = 10`), and `broken_plank.tscn` reuses the same script too. It finds the water via the `water` group (`get_first_node_in_group("water")`). `boat.gd` also sets `receives_water_drag = false` so `water_spring.gd` skips its velocity drag on the boat.
 
-**Throwables (`scripts/Throwable/`)**
-- `grenade.gd` / debris-type projectiles: simple `RigidBody2D.launch(rotation, velocity)`, self-destruct via `VisibleOnScreenNotifier2D` (`_on_visible_on_screen_notifier_2d_screen_exited`).
-- `hook.gd` — projectile that also updates its own sprite rotation/flip based on velocity direction.
-- `line_hook.gd` — throw-and-recall grappling hook, entirely self-contained (reads `shoot`/`climb_up`/`climb_down`/`jump` input itself, doesn't go through `trajectory.gd`): `IDLE`/`FLYING`/`STUCK`/`RECALLING` state machine, drawn via a `Line2D` connecting player and hook (`top_level = true` so the rope isn't affected by parent transforms). While `STUCK`, it clamps the player onto a rope-length circle each physics frame (`constrain_rope`) for swing physics, and `climb_up`/`climb_down` reel the rope length in/out.
+**Grappling hook (`scripts/HookRope/`, `scenes/Throwable/line_hook.tscn`)** — see `docs/line_hook_scene.md`.
+A `RigidBody2D` (`Hook`, `hook.gd`) instanced as the `Line-Hook` child of the Character, split into small component `Node`s that each reach the root via `get_parent()`: `HookInput` (`shoot`/`jump` input), `HookThrower`, `HookAttachment` (on first contact → `STUCK`), `HookRecaller`, `RopeReel` (`climb_up`/`climb_down` rope length + winching stuck objects), `SwingController` (spring-damper tension on the player, tows stuck `RigidBody2D`s), `RopeLineRenderer` (verlet chain drawn into the `Line2D`, visual only). State machine: `IDLE`/`FLYING`/`STUCK`/`RECALLING`. The hook is `top_level = true`. `stick_to_layers` decides what it sticks to (Character sets it to world + object + dock + boat). Older docs referenced `line_hook.gd` / `hook.gd` under `scripts/Throwable/`; those files no longer exist.
 
-**Rope simulation (`scripts/Map/static_rope.gd`, mirrored logic in `scripts/Throwable/hook_rope.gd`)**
-Procedurally builds a rope out of `rope_piece.tscn` segments connected by `PinJoint2D`s:
+**Throwables (`scripts/Throwable/`, `scenes/Throwable/`)**
+- `grenade.gd` — simple `RigidBody2D.launch(rotation, velocity)`, self-destructs via `VisibleOnScreenNotifier2D` (`_on_visible_on_screen_notifier_2d_screen_exited`). Nothing in the scenes currently spawns it.
+- `debris.tscn` / `broken_plank.tscn` — pickable `RigidBody2D`s (`GrabObject` + `InteractionPrompt`), layer 3 (`object`). The plank floats (has `buoyancy2.gd`); Debris currently does not. Placed by hand in `level_0`/`level_1`.
+
+**Rope (`scripts/Map/static_rope.gd`, `scenes/Map/static_rope.tscn`, `scenes/Items/rope_piece.tscn`)**
+Procedurally builds a hanging rope out of `rope_piece.tscn` segments connected by `PinJoint2D`s:
 1. Instantiate one sample segment to read its `CapsuleShape2D` height → `segment_spacing`.
-2. Instantiate `rope_length` segments, positioned by cumulative spacing from the anchor (`StaticBody2D` or `Hook`).
-3. Create a `PinJoint2D` per link, chaining segment→segment (first joint anchors to the static/hook body).
-`hook_rope.gd` additionally decrements `mass` per segment (`base_mass - mass_decrement * i`, floored at 0.01) so the rope tapers.
+2. Instantiate `rope_length` segments, positioned by cumulative spacing from the anchor `StaticBody2D`.
+3. Create a `PinJoint2D` per link, chaining segment→segment (first joint anchors to the static body).
+The old `hook_rope.gd` / `hook_rope_generation.tscn` (tapering-mass rope on the hook) no longer exist; the hook's rope is now the verlet visual in `RopeLineRenderer`. `scenes/rope_head.tscn` exists but nothing references it. Note `rope_piece` uses layer/mask 8 and `static_rope` uses 128 (see Physics layers).
+
+**Lever (`scenes/Items/lever.tscn`, `scripts/Item/lever.gd`)**
+`Node2D` + `AnimatedSprite2D` (`off`/`on` animations) + a `Proximity-Highlight` ("Press 'E' to Pull Lever"). Toggles `is_on` and the animation on `interact`. Placed once in `level_1.tscn`; it doesn't drive anything yet. Caveat: `lever.gd` listens to `interact` in `_unhandled_input` regardless of the player being in range (the highlight only shows the prompt), so any `interact` press toggles it.
 
 **Water simulation (`scripts/Water/`)**
 Spring-mesh water (Van der Windrift-style) driving both visuals and buoyancy:
@@ -116,18 +140,31 @@ Sibling panels under `CanvasLayer` (all start hidden in `_ready`): `DockMenu` (t
 - "Market"/"Quest"/"Workshop" now just swap to placeholder panels (`Shop`/`Quests`/`Workshop`) with a Back button — no real shop/quest/workshop content yet. Follow this show/hide-panel + Back-button pattern when building those out rather than introducing a new navigation scheme.
 - Follow this scene's pattern (self-contained scene: entry-trigger Area2D + Label + pausing CanvasLayer UI, instanced into the map scene) for future dock/UI entry points rather than adding loose Area2D nodes to map scenes directly.
 
+**Levels (`scenes/Map/`)**
+- `level_1.tscn` (the real level, "New Game" target): parallax background, `Background`/`Platform`/`Top-Platform` TileMapLayers, `Dock` (instance of `dock_1.tscn`), `Lever`, `Boat`, `Character`, `Water_Body` (group `water`; debris counts overridden), 3 pickable `Debris`, the tutorial popups, spawn markers, the kill zones and the boundary walls.
+- `level_0.tscn`: a sandbox/test level (water, `ReflectionPatchExample`, one `TileMapLayer`, Boat, Character, 2 Debris, a `Broken-Plank`). Not reachable from the menu.
+- `parallax_background.tscn`: two `Parallax2D` layers (`Background_0` static in x, `Background_1` at 0.4 scroll, repeating), instanced in both levels.
+- `dock_1.tscn` / `dock_1.gd`: the dock also has a `climb_point` marker; pressing `climb_up` near the dock teleports the player to it and enables the `dock` layer (7) in the player's collision mask (the player's default mask does not include it). It also contains the `MarketUI` instance (below).
+
 ## Input actions (`project.godot` → `[input]`)
 
-`shoot`, `aim`, `grab`, `pickup`, `drop`, `left`, `right`, `jump`, `climb_up`, `climb_down`, `interact`, `pause` (Esc, handled by the `PauseMenue` autoload) — defined in `project.godot`, not in code. Check this section before adding new bindings rather than hardcoding keycodes in scripts.
+Bindings: `left` A, `right` D, `jump` Space, `climb_up` W, `climb_down` S, `interact` E, `pickup` F, `drop` G, `shoot` Left Mouse, `aim` Right Mouse, `pause` Esc (handled by the `PauseMenue` autoload). `grab` (Left Mouse) is defined but not used by any script. Defined in `project.godot`, not in code — check before adding new bindings rather than hardcoding keycodes. Prompt strings ("Press 'F' to pickup", 'Press "E" to Enter') are hardcoded Labels and do not follow rebinds; `camera_pan.gd` reads the right mouse button directly, not via `aim`. Full table with usages: `docs/project_settings.md`.
 
 ## Physics layers (`project.godot` → `[layer_names]`)
 
-`1=world`, `2=player`, `3=object`, `4=hook`, `5=water`, `6=boat_interior`, `7=dock`, `8=boat`, `9=boundary` — respect these when setting `collision_layer`/`collision_mask` on new bodies.
+`1=world`, `2=player`, `3=object`, `4=hook`, `5=water`, `6=boat_interior`, `7=dock`, `8=boat`, `9=boundary` — respect these when setting `collision_layer`/`collision_mask` on new bodies. Saved values are bit sums (layer N = 2^(N-1)); e.g. Character layer 2, mask 391 = world+player+object+boat+boundary. Per-scene layer/mask table: `docs/project_settings.md`.
+
+## Display / render settings
+
+No viewport size is set (default 1152x648); stretch mode `canvas_items`, aspect `expand` (wider windows reveal more of the level); default canvas texture filter is Nearest (pixel art). Player camera zoom is 1.2. Details in `docs/project_settings.md`.
 
 ## Gotchas seen in existing code
 
 - Pickup/drop/throw state lives in the item's own `GrabObject`, keyed against the shared `HeldItemManager.held_item`/`is_held` — if adding a new held-item type, attach `grab_object.gd` + `proximity_highlight.gd` to it rather than writing new pickup logic against the player.
-- Two independent buoyancy implementations exist (`scripts/Water/buoyant_object.gd` for general objects, `scripts/Boat/buoyancy2.gd` for the boat) — check which one a scene actually uses before tuning water-force constants.
-- `trajectory.gd` still contains an unused `throw()` method and a commented-out call site; the real grapple-hook throw path is `line_hook.gd`'s own `_input` handler.
-- `cargo_weight.gd` has a leftover `print(boat.mass)` debug statement in `_recalculate()`.
+- Two independent buoyancy implementations exist (`scripts/Water/buoyant_object.gd` for general objects, `scripts/Boat/buoyancy2.gd` for the boat and the broken plank) — check which one a scene actually uses before tuning water-force constants.
+- `trajectory.gd` only keeps a `pass` placeholder and a commented-out call where a throw used to be; the real grapple-hook throw path is `HookInput` in `scripts/HookRope/hook_input.gd`. A comment in `character_movement.gd` still says swing-jumps are in `line_hook.gd` (stale — it's `hook_input.gd`).
+- `cargo_weight.gd` has a leftover `print(boat.mass)` debug statement in `_recalculate()`, and `static_rope.gd` prints a joint position in `_ready()`.
+- `scenes/water/` is lowercase while `scripts/Water/` is capitalized; preload paths use the exact case (`res://scenes/water/...`).
+- Several scripts find nodes by exact name (`Pickable-Position`, `CollisionShape2D`, `Camera2D`, `Sprite2D`, `BoatMount`, `BoatDriver`, `Line2D`, hook component names) — renaming those nodes breaks them.
+- Stray `*.tmp` files in `scenes/Character/` and `scenes/Throwable/` are editor leftovers, safe to ignore/delete.
 - `camera_pan.gd`'s `clamp_offset_to_limits` derives its offset bounds from a camera-center position (`cam_center`, itself clamped by `half_view`) rather than raw player position, matching Godot's built-in camera clamp — don't reintroduce raw `player_pos` into the `min_offset`/`max_offset` math or the offset clamp will disagree with the engine's own limit clamp.
