@@ -25,6 +25,7 @@ Per-scene/system reference docs live in `docs/`. Each has the node tree, physics
 | Doc | Covers |
 |---|---|
 | `docs/character_scene.md` | Player `CharacterBody2D`, movement/swing mode, camera pan, aim preview, animations |
+| `docs/trajectory_scene.md` | Aim-preview parabola (`trajectory.tscn`/`trajectory.gd`), how it relates to item/hook throws |
 | `docs/line_hook_scene.md` | Grappling hook (`scripts/HookRope/*`), state machine, swing/reel/tow physics, verlet rope |
 | `docs/boat_scene.md` | Boat body, mount/dismount, rowing, buoyancy, cargo mass, outline shader |
 | `docs/debris_scene.md` | Pickable Debris (`scenes/Throwable/debris.tscn`) and decorative Floating Debris (water) |
