@@ -50,9 +50,12 @@ func constrain_rope(delta):
 		hook.player.is_swinging = true
 		hook.player.velocity += tension * delta
 
-		# safety net: only kicks in past max_stretch, otherwise it's pure spring
+		# safety net: only kicks in past max_stretch, otherwise it's pure spring.
+		# move_and_collide, not a raw global_position offset - a direct position
+		# add ignores collision entirely, so a player reeled in taut against a
+		# wall (hook stuck on the far side) could get shoved straight through it.
 		if stretch > max_stretch:
-			hook.player.global_position += dir * (stretch - max_stretch)
+			hook.player.move_and_collide(dir * (stretch - max_stretch))
 
 	# Newton's third law: the rope pulls the attached object back with the
 	# same tension it exerts on the player, just reversed. apply_central_force

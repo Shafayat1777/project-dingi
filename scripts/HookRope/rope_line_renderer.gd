@@ -6,11 +6,19 @@ extends Node
 @export var damping := 0.98             # velocity retention per step (verlet "friction")
 @export var stiffness_iterations := 8   # constraint relaxation passes per step (higher = stiffer/less stretchy)
 
+# Terrain collision for the rope's visual chain only (the swing force in
+# swing_controller.gd still uses a straight line to the hook, not this chain -
+# see get_pull_direction()'s doc comment). World + object (layer 2 = player is
+# deliberately excluded so the rope never snags on the player it's attached to).
+@export_flags_2d_physics var collision_mask := 1 + 4
+@export var collision_radius := 3.0
+
 @onready var hook: Hook = get_parent()
 
 var points: PackedVector2Array = []
 var old_points: PackedVector2Array = []
 var initialized := false
+var _query_shape := CircleShape2D.new()
 
 # Called from Hook._physics_process every physics step while state != IDLE.
 func simulate(delta: float) -> void:
@@ -27,6 +35,7 @@ func simulate(delta: float) -> void:
 		initialized = true
 
 	_integrate(delta)
+	_resolve_collisions()
 	_apply_constraints(start, end)
 	_draw()
 
@@ -47,6 +56,52 @@ func _integrate(delta: float) -> void:
 		var next = current + velocity + Vector2.DOWN * gravity * delta * delta
 		old_points[i] = current
 		points[i] = next
+
+# Pushes each free chain point out of any world/object geometry it ended up
+# inside this step, so the line drapes/bends over edges and corners instead of
+# cutting straight through them. Runs before the distance constraints so the
+# length pass can re-tension the chain around the pushed-out point afterward.
+func _resolve_collisions() -> void:
+	_query_shape.radius = collision_radius
+	var space_state := hook.get_world_2d().direct_space_state
+
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = _query_shape
+	query.collision_mask = collision_mask
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
+
+	# skip the two anchor points (index 0 = player side, last = hook side)
+	for i in range(1, points.size() - 1):
+		query.transform = Transform2D(0.0, points[i])
+		var contacts := space_state.collide_shape(query, 8)
+		if contacts.is_empty():
+			continue
+
+		# world tiles are a grid of individual square shapes, so a point sitting
+		# right on a 90-degree tile corner can get a degenerate (zero-length)
+		# push vector from collide_shape - the closest point on both the query
+		# circle and the tile corner is the same vertex, so there's no normal to
+		# push along. Fall back to ejecting the point back along the direction
+		# it arrived from, so it doesn't stay clipped into the corner forever.
+		var incoming := points[i] - old_points[i]
+		var fallback_dir := -incoming.normalized() if incoming.length() > 0.0001 else Vector2.UP
+
+		# collide_shape returns pairs of points: [point_on_query_shape, point_on_other_shape, ...]
+		for c in range(0, contacts.size(), 2):
+			var point_on_self: Vector2 = contacts[c]
+			var point_on_other: Vector2 = contacts[c + 1]
+			var push = point_on_self - point_on_other
+			var depth = push.length()
+			if depth > 0.0001:
+				points[i] += push.normalized() * (collision_radius - depth)
+			else:
+				points[i] += fallback_dir * collision_radius
+
+		# only kill velocity into the surface when we actually pushed out this
+		# step - resetting old_points unconditionally would zero the rope's
+		# sag/swing momentum every frame, even with nothing to collide against
+		old_points[i] = points[i]
 
 func _apply_constraints(start: Vector2, end: Vector2) -> void:
 	# rope "length" the constraints try to hold: current_rope_length while STUCK

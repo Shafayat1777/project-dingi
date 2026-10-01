@@ -100,14 +100,17 @@ Runtime vars: `state`, `stuck_body`, `current_rope_length`, `attach_offset` (sti
 1. If stuck to a body, moves the hook to `stuck_body.global_position + attach_offset` (follows the object).
 2. `stretch = distance - current_rope_length`. If ≤ 0: slack, `is_swinging = false`, return.
 3. `tension = dir*stretch*spring_stiffness(40) + (-dir * v_along_rope * spring_damping(6))`.
-4. If a body is stuck and climb_up/down is held ("reeling_object"): `is_swinging = false`, tension is **not** applied to the player (prevents the player being yanked toward the object). Otherwise `is_swinging = true`, `player.velocity += tension*delta`, and a position safety push if `stretch > max_stretch(30)`.
+4. If a body is stuck and climb_up/down is held ("reeling_object"): `is_swinging = false`, tension is **not** applied to the player (prevents the player being yanked toward the object). Otherwise `is_swinging = true`, `player.velocity += tension*delta`, and a `move_and_collide` safety push (collision-checked, not a raw position offset — see gotchas) if `stretch > max_stretch(30)`.
 5. If stuck to a body: applies `-tension` to it (Newton's 3rd) plus `-dir * mass * drag_strength` (mass-independent tow acceleration).
 
 `player.is_swinging` is read by `character_movement.gd` to switch to air-control swing mode (see the character doc).
 
 **`RopeLineRenderer`** — visual only; a verlet chain drawn into `Line2D`.
-- Exports: `segment_count` (20 in scene, 12 default), `gravity` 900, `damping` 0.98, `stiffness_iterations` 8.
-- `simulate(delta)`: IDLE → clear line and reset. Otherwise anchors point 0 to the player and last point to the hook, integrates the middle points with gravity, runs constraint passes with segment length = `current_rope_length / (n-1)` while STUCK (so slack/reeling is visible) or the live distance otherwise.
+- Exports: `segment_count` (20 in scene, 12 default), `gravity` 900, `damping` 0.98, `stiffness_iterations` 8, `collision_mask` (world+object = 5 by default), `collision_radius` 3.0.
+- `simulate(delta)`: IDLE → clear line and reset. Otherwise anchors point 0 to the player and last point to the hook, integrates the middle points with gravity, resolves terrain collision, then runs constraint passes with segment length = `current_rope_length / (n-1)` while STUCK (so slack/reeling is visible) or the live distance otherwise.
+- `_resolve_collisions()`: each non-anchor chain point does a `PhysicsDirectSpaceState2D.collide_shape` query (small `CircleShape2D`, mask `collision_mask`) and is pushed out along the separation vector if it ended up inside world/object geometry — this is what makes the rope visually drape/bend over edges instead of cutting through them. Runs *before* the distance constraints each step (classic Jakobsen-style integrate → collide → constrain ordering). Player (layer 2) is deliberately left out of the mask so the rope never snags on the body it's attached to. A point's `old_points` entry is only reset (killing its verlet velocity) when a push actually happened, so normal sag/swing motion isn't damped out every frame.
+  - World geometry is a grid of per-tile square shapes (see `project_settings.md`/the TileMapLayer data), so a point can land exactly on a 90° tile corner where `collide_shape`'s closest-point pair degenerates to the same vertex (zero-length push, no normal). Without a fallback the point stays clipped into the corner forever. The fallback direction is "back the way the point came from" (`-(points[i] - old_points[i]).normalized()`), so corners still eject the rope instead of swallowing it. `max_results` is 8 (not 4) since a point near a concave corner can be touching more than one tile shape at once.
+- This is purely a visual correction on the drawn chain — the actual swing force in `swing_controller.gd` still pulls the player along a straight line to the hook's real position, not along this bent chain.
 - `get_pull_direction()` / `get_chain_length()` exist but are currently **not used** by the swing physics.
 
 ---
@@ -122,6 +125,7 @@ Runtime vars: `state`, `stuck_body`, `current_rope_length`, `attach_offset` (sti
 
 ## Open items / gotchas
 
+- `SwingController.constrain_rope`'s `stretch > max_stretch` safety push uses `player.move_and_collide(...)`, not a raw `global_position +=`. A direct position offset ignores collision entirely — with the hook stuck on the far side of a wall, reeling in (`climb_up`) taut against it would shove the player straight through. `move_and_collide` stops at the wall like any other player motion.
 - Throw starts at the player's origin (`player.global_position`, i.e. feet area), not at the hand.
 - `rope_line_renderer.gd` comments reference a "Verlet Rope + Elastic Swing section above" that doesn't exist anymore (it was in older docs).
 - Hook `Sprite2D` has no code that rotates/flips it other than the body's `rotation = dir.angle()`.
@@ -456,11 +460,19 @@ extends Node
 @export var damping := 0.98             # velocity retention per step (verlet "friction")
 @export var stiffness_iterations := 8   # constraint relaxation passes per step (higher = stiffer/less stretchy)
 
+# Terrain collision for the rope's visual chain only (the swing force in
+# swing_controller.gd still uses a straight line to the hook, not this chain -
+# see get_pull_direction()'s doc comment). World + object (layer 2 = player is
+# deliberately excluded so the rope never snags on the player it's attached to).
+@export_flags_2d_physics var collision_mask := 1 + 4
+@export var collision_radius := 3.0
+
 @onready var hook: Hook = get_parent()
 
 var points: PackedVector2Array = []
 var old_points: PackedVector2Array = []
 var initialized := false
+var _query_shape := CircleShape2D.new()
 
 # Called from Hook._physics_process every physics step while state != IDLE.
 func simulate(delta: float) -> void:
@@ -477,6 +489,7 @@ func simulate(delta: float) -> void:
 		initialized = true
 
 	_integrate(delta)
+	_resolve_collisions()
 	_apply_constraints(start, end)
 	_draw()
 
@@ -497,6 +510,52 @@ func _integrate(delta: float) -> void:
 		var next = current + velocity + Vector2.DOWN * gravity * delta * delta
 		old_points[i] = current
 		points[i] = next
+
+# Pushes each free chain point out of any world/object geometry it ended up
+# inside this step, so the line drapes/bends over edges and corners instead of
+# cutting straight through them. Runs before the distance constraints so the
+# length pass can re-tension the chain around the pushed-out point afterward.
+func _resolve_collisions() -> void:
+	_query_shape.radius = collision_radius
+	var space_state := hook.get_world_2d().direct_space_state
+
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = _query_shape
+	query.collision_mask = collision_mask
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
+
+	# skip the two anchor points (index 0 = player side, last = hook side)
+	for i in range(1, points.size() - 1):
+		query.transform = Transform2D(0.0, points[i])
+		var contacts := space_state.collide_shape(query, 8)
+		if contacts.is_empty():
+			continue
+
+		# world tiles are a grid of individual square shapes, so a point sitting
+		# right on a 90-degree tile corner can get a degenerate (zero-length)
+		# push vector from collide_shape - the closest point on both the query
+		# circle and the tile corner is the same vertex, so there's no normal to
+		# push along. Fall back to ejecting the point back along the direction
+		# it arrived from, so it doesn't stay clipped into the corner forever.
+		var incoming := points[i] - old_points[i]
+		var fallback_dir := -incoming.normalized() if incoming.length() > 0.0001 else Vector2.UP
+
+		# collide_shape returns pairs of points: [point_on_query_shape, point_on_other_shape, ...]
+		for c in range(0, contacts.size(), 2):
+			var point_on_self: Vector2 = contacts[c]
+			var point_on_other: Vector2 = contacts[c + 1]
+			var push = point_on_self - point_on_other
+			var depth = push.length()
+			if depth > 0.0001:
+				points[i] += push.normalized() * (collision_radius - depth)
+			else:
+				points[i] += fallback_dir * collision_radius
+
+		# only kill velocity into the surface when we actually pushed out this
+		# step - resetting old_points unconditionally would zero the rope's
+		# sag/swing momentum every frame, even with nothing to collide against
+		old_points[i] = points[i]
 
 func _apply_constraints(start: Vector2, end: Vector2) -> void:
 	# rope "length" the constraints try to hold: current_rope_length while STUCK
@@ -618,9 +677,12 @@ func constrain_rope(delta):
 		hook.player.is_swinging = true
 		hook.player.velocity += tension * delta
 
-		# safety net: only kicks in past max_stretch, otherwise it's pure spring
+		# safety net: only kicks in past max_stretch, otherwise it's pure spring.
+		# move_and_collide, not a raw global_position offset - a direct position
+		# add ignores collision entirely, so a player reeled in taut against a
+		# wall (hook stuck on the far side) could get shoved straight through it.
 		if stretch > max_stretch:
-			hook.player.global_position += dir * (stretch - max_stretch)
+			hook.player.move_and_collide(dir * (stretch - max_stretch))
 
 	# Newton's third law: the rope pulls the attached object back with the
 	# same tension it exerts on the player, just reversed. apply_central_force
