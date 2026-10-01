@@ -32,19 +32,31 @@ func pick_up() -> void:
 	if Input.is_action_just_pressed("pickup") and marker and not HeldItemManager.is_held:
 		var target_marker := marker  # cache it before remove_child() can null the member var
 
-		object.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
+		# FREEZE_MODE_STATIC (the default), not KINEMATIC: kinematic mode makes
+		# the physics server estimate the body's velocity from its position
+		# delta each step so it can push things it touches. If the player is
+		# standing on this object when it teleports to the marker below, that
+		# estimate becomes huge, and CharacterBody2D's default
+		# platform_on_leave behavior dumps it onto the player next frame,
+		# flinging them into the level boundary. Held items don't need to
+		# push anything (they're set non-colliding below), so static avoids it.
+		object.freeze_mode = RigidBody2D.FREEZE_MODE_STATIC
 		object.freeze = true
+		object.linear_velocity = Vector2.ZERO
+		object.angular_velocity = 0.0
+
+		# Break contact with the player BEFORE reparenting/repositioning.
+		held_item_layer = object.collision_layer
+		held_item_mask = object.collision_mask
+		object.collision_layer = 0
+		object.collision_mask = 0
+
 		var prev_parent = object.get_parent()
 		prev_parent.remove_child(object)
 		target_marker.add_child(object)
 
 		object.position = Vector2.ZERO
 		object.rotation = 0.0
-
-		held_item_layer = object.collision_layer
-		held_item_mask = object.collision_mask
-		object.collision_layer = 0
-		object.collision_mask = 0
 
 		HeldItemManager.held_item = object
 		HeldItemManager.is_held = true

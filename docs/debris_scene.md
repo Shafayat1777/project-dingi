@@ -51,7 +51,7 @@ Runs every `_physics_process`:
 
 | Action | Trigger | What happens |
 |---|---|---|
-| `pick_up()` | `pickup` just pressed (**F**), `marker` set (player in range), `HeldItemManager.is_held == false` | Sets `freeze=true` (kinematic freeze mode), reparents the body under the player's `Pickable-Position` `Marker2D`, zeroes position/rotation, saves then zeroes collision layer/mask, sets `HeldItemManager.held_item/is_held` |
+| `pick_up()` | `pickup` just pressed (**F**), `marker` set (player in range), `HeldItemManager.is_held == false` | Sets `freeze=true` (static freeze mode, zeroed velocity), zeroes collision layer/mask first (saved for restore), then reparents the body under the player's `Pickable-Position` `Marker2D` and zeroes position/rotation, sets `HeldItemManager.held_item/is_held` |
 | `drop()` | `drop` just pressed and `HeldItemManager.held_item == object` | Reparents to `current_scene` keeping global position, restores layer/mask, unfreezes, `linear_velocity = (200 * facing_direction, -150)` |
 | `throw()` | `shoot` just pressed (left mouse) and held | Same reparent/restore, then `linear_velocity = direction_to_mouse * throw_force` |
 
@@ -63,6 +63,7 @@ Caveats worth knowing:
 - The whole pickup logic runs on every instance every physics frame; each one only acts if its own `marker` is set (player in *its* range) or it is the currently held item.
 - `pick_up`/`drop`/`throw` all read `Input.is_action_just_pressed` in `_physics_process`, not `_input`.
 - Drop/throw restore the layer/mask saved at pickup (`held_item_layer/mask`), so those must be captured before they're zeroed — already handled.
+- `pick_up()` uses `FREEZE_MODE_STATIC`, not `KINEMATIC`. Kinematic mode makes the physics server estimate the body's velocity from its position delta each step (so it can push things it touches) — if the player is standing on top of the object (its `collision_mask` includes the player layer) when it teleports to the marker, that estimate becomes huge, and `CharacterBody2D`'s default `platform_on_leave` behavior dumps that velocity onto the player next frame, flinging them across the map (was the cause of a "player teleports to origin when picking up debris while standing on it" bug). Collision layer/mask are also zeroed *before* the reparent now, so the object isn't touching the player at all by the time its transform jumps.
 
 ### Component: `Proximity-Highlight` (`scenes/Global/proximity_highlight.tscn`, `scripts/Global/proximity_highlight.gd`, `class_name InteractionPrompt`)
 
@@ -293,19 +294,31 @@ func pick_up() -> void:
 	if Input.is_action_just_pressed("pickup") and marker and not HeldItemManager.is_held:
 		var target_marker := marker  # cache it before remove_child() can null the member var
 
-		object.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
+		# FREEZE_MODE_STATIC (the default), not KINEMATIC: kinematic mode makes
+		# the physics server estimate the body's velocity from its position
+		# delta each step so it can push things it touches. If the player is
+		# standing on this object when it teleports to the marker below, that
+		# estimate becomes huge, and CharacterBody2D's default
+		# platform_on_leave behavior dumps it onto the player next frame,
+		# flinging them into the level boundary. Held items don't need to
+		# push anything (they're set non-colliding below), so static avoids it.
+		object.freeze_mode = RigidBody2D.FREEZE_MODE_STATIC
 		object.freeze = true
+		object.linear_velocity = Vector2.ZERO
+		object.angular_velocity = 0.0
+
+		# Break contact with the player BEFORE reparenting/repositioning.
+		held_item_layer = object.collision_layer
+		held_item_mask = object.collision_mask
+		object.collision_layer = 0
+		object.collision_mask = 0
+
 		var prev_parent = object.get_parent()
 		prev_parent.remove_child(object)
 		target_marker.add_child(object)
 
 		object.position = Vector2.ZERO
 		object.rotation = 0.0
-
-		held_item_layer = object.collision_layer
-		held_item_mask = object.collision_mask
-		object.collision_layer = 0
-		object.collision_mask = 0
 
 		HeldItemManager.held_item = object
 		HeldItemManager.is_held = true
