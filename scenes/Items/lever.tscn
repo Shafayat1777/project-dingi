@@ -99,3 +99,6 @@ frame_progress = 1.0
 [node name="Proximity-Highlight" parent="." unique_id=250086518 instance=ExtResource("2_7d15k")]
 popup_text = "Press 'E' to Pull Lever"
 detection_size = Vector2(20, 20)
+
+[connection signal="body_entered" from="Proximity-Highlight" to="." method="_on_proximity_highlight_body_entered"]
+[connection signal="body_exited" from="Proximity-Highlight" to="." method="_on_proximity_highlight_body_exited"]
