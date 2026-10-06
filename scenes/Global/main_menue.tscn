@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://re7owegljq6c" path="res://assets/ui/Resume  col_Button.png" id="6_krx3d"]
 [ext_resource type="Texture2D" uid="uid://bsyq44gsa06p2" path="res://assets/ui/Quit  col_Button.png" id="8_8q1xl"]
 [ext_resource type="Script" uid="uid://bs3j6e0m6pjl0" path="res://scripts/Global/check_button.gd" id="11_krx3d"]
+[ext_resource type="Script" path="res://scripts/Global/skip_tutorial_button.gd" id="12_skiptut"]
 
 [node name="Main Menue" type="Node2D" unique_id=117350330]
 script = ExtResource("1_flaqr")
@@ -87,8 +88,17 @@ size_flags_stretch_ratio = 0.0
 text = "Full Screen"
 script = ExtResource("11_krx3d")
 
+[node name="SkipTutorialButton" type="CheckButton" parent="CanvasLayer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+text = "Skip Tutorials"
+script = ExtResource("12_skiptut")
+
 [connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/New Game" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/Resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="CanvasLayer/PanelContainer/VBoxContainer/Button Manager/Quit" to="." method="_on_quit_pressed"]
 [connection signal="toggled" from="CanvasLayer/PanelContainer/VBoxContainer/CheckButton" to="CanvasLayer/PanelContainer/VBoxContainer/CheckButton" method="_on_toggled"]
+[connection signal="toggled" from="CanvasLayer/PanelContainer/VBoxContainer/SkipTutorialButton" to="CanvasLayer/PanelContainer/VBoxContainer/SkipTutorialButton" method="_on_toggled"]

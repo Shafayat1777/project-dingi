@@ -8,7 +8,7 @@ func _ready() -> void:
 	canvas_layer.hide()
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
-	if body is CharacterBody2D and body_passed == false:
+	if body is CharacterBody2D and body_passed == false and not PauseMenue.skip_tutorials:
 		canvas_layer.show()
 		get_tree().paused = true
 		body_passed = true

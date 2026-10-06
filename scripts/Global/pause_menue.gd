@@ -5,6 +5,7 @@ const MAIN_MENU = preload("res://scenes/Global/main_menue.tscn")
 var menu_instance: Node = null
 var pause_menu: bool = false
 var full_screen: bool = false
+var skip_tutorials: bool = false
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS  # keep running while paused
