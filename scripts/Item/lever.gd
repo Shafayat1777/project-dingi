@@ -4,7 +4,7 @@ extends Node2D
 @export var tilemap: TileMapLayer
 @export var waterbody: Node2D
 @export var move_offset := Vector2(0, 600)
-@export var water_move_offset := Vector2(0, -257)
+@export var water_move_offset := Vector2(0, -357)
 @export var speed := 60.0
 @export var water_speed := 81.0
 
