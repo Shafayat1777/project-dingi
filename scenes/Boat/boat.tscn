@@ -29,7 +29,7 @@ size = Vector2(141, 20)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6f4wy"]
 size = Vector2(237, 78)
 
-[node name="Boat" type="RigidBody2D" unique_id=1550122346]
+[node name="Boat" type="RigidBody2D" unique_id=1550122346 groups=["boat"]]
 collision_layer = 128
 collision_mask = 261
 script = ExtResource("1_0r3a7")
@@ -85,7 +85,9 @@ script = ExtResource("7_fg55p")
 
 [node name="Buoyancy" type="Node2D" parent="." unique_id=1163057670]
 script = ExtResource("8_bnnrb")
-buoyancy_damping = 10.0
+buoyancy_damping = 1.0
+angular_damping = 20.0
+righting_stiffness = 2000.0
 
 [connection signal="body_entered" from="CargoArea/Area2D" to="CargoArea" method="_on_cargo_area_body_entered"]
 [connection signal="body_exited" from="CargoArea/Area2D" to="CargoArea" method="_on_cargo_area_body_exited"]

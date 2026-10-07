@@ -10,6 +10,15 @@ var is_submerged := false
 
 @export var water_density = 12.0
 @export var buoyancy_damping = 0.5
+@export var angular_damping = 6.0
+# explicit restoring torque toward rotation=0 (upright). The two sample
+# points' horizontal spread shrinks as the hull tilts further (they swing
+# toward being stacked vertically instead of spread fore/aft), so their own
+# differential buoyancy force gets WEAKER at righting the boat the more it
+# tilts - this term doesn't have that falloff, so it keeps growing stronger
+# with tilt and can't lose a tug-of-war against an edge load the way the
+# sample-point method alone can
+@export var righting_stiffness = 15000.0
 @export var pixels_per_meter = 100.0
 @export var max_buoyancy_force = 60000.0
 
@@ -25,7 +34,7 @@ func _ready() -> void:
 		h = shape.radius * 2
 	elif shape is CapsuleShape2D:
 		w = shape.radius * 2
-		h = shape.height
+		h = shape.height + shape.radius * 2  # height is just the straight segment; add both end caps for the true length
 	else:
 		push_warning("Unsupported collision shape for buoyancy sizing, using default 32x32")
 		w = 32.0
@@ -63,7 +72,8 @@ func _physics_process(delta: float) -> void:
 
 	if is_submerged:
 		body.apply_central_force(Vector2(0, -body.linear_velocity.y * buoyancy_damping * body.mass))
-		body.apply_torque(-body.angular_velocity * buoyancy_damping * body.mass)
+		body.apply_torque(-body.angular_velocity * angular_damping * body.mass)
+		body.apply_torque(-body.rotation * righting_stiffness * body.mass)
 
 	if "is_on_water" in body:
 		body.is_on_water = is_submerged

@@ -25,7 +25,7 @@ func _ready():
 		object_height = shape.radius * 2
 	elif shape is CapsuleShape2D:
 		object_width = shape.radius * 2
-		object_height = shape.height
+		object_height = shape.height + shape.radius * 2  # height is just the straight segment; add both end caps for the true length
 	else:
 		push_warning("Unsupported collision shape for buoyancy sizing, using default 32x32")
 		object_width = 32.0

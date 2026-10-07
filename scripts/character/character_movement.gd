@@ -13,6 +13,7 @@ var push_force = 60.0
 @export var water_push_force := 300.0
 
 var is_swinging := false
+var on_boat := false
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -46,6 +47,8 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+	on_boat = false
+
 	for i in get_slide_collision_count():
 		var c = get_slide_collision(i)
 		var collider = c.get_collider()
@@ -54,6 +57,8 @@ func _physics_process(delta: float) -> void:
 			if normal.dot(Vector2.UP) > 0.7:
 				# continuous weight, not an impulse, so a floating object dips and bobs
 				collider.apply_force(Vector2(0, standing_weight_force), c.get_position() - collider.global_position)
+				if collider.is_in_group("boat"):
+					on_boat = true
 			elif "is_submerged" in collider and collider.is_submerged:
 				# continuous force outlasts the water drag that kills a one-shot impulse
 				collider.apply_central_force(Vector2(-normal.x, 0) * water_push_force)
