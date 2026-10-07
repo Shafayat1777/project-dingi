@@ -967,7 +967,7 @@ position = Vector2(8541, 324)
 hook_pull_multiplier = 0.1
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
-position = Vector2(7486, 376)
+position = Vector2(97, 516)
 
 [node name="Water_Body" parent="." unique_id=18857598 groups=["water"] instance=ExtResource("3_lxnil")]
 position = Vector2(8033, 858)

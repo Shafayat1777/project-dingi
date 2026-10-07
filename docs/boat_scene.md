@@ -70,7 +70,7 @@ Every component grabs the boat via `get_parent()` and sibling nodes by name (`Bo
 - `_unhandled_input` on `interact`: if occupied → `boat_mount.dismount()` (re-shows the prompt if the player is still in range); else if a player is nearby → `boat_mount.mount(nearby_player)` and hides prompt/outline.
 
 **`boat_mount.gd`**
-- `mount(player)`: ignores if already occupied; remembers `original_parent`; `player.set_physics_process(false)`; disables the player's `CollisionShape2D` (deferred); reparents the player under the boat at the boat's global position; `Camera2D.reset_smoothing()`; sets `is_occupied`, `driver`, and `boat_driver.set_active(true)`.
+- `mount(player)`: ignores if already occupied; remembers `original_parent`; `player.set_physics_process(false)`; disables the player's `CollisionShape2D` (deferred); clears the `dock` (layer 7) bit from the player's collision mask (re-enabled only by `climb_up` at the dock, see `dock_1.gd`); reparents the player under the boat at the boat's global position; `Camera2D.reset_smoothing()`; sets `is_occupied`, `driver`, and `boat_driver.set_active(true)`.
 - `dismount()`: reparents back to `original_parent` at `ExitMarker`'s global position, resets camera smoothing, re-enables collider and physics, clears occupancy, `set_active(false)`.
 
 **`boat_driver.gd`** — active only while mounted. `left`/`right` held → `apply_central_force(∓row_force, 0)` (`row_force=600`) and sets `sprite.flip_h` (**right = flipped, left = not flipped**, i.e. the art faces left by default). Velocity capped to `max_speed=250` via `limit_length`.
@@ -356,6 +356,8 @@ extends Node2D
 @onready var exit_marker: Marker2D = $ExitMarker
 @onready var boat_driver: Node = get_parent().get_node("BoatDriver")
 
+const DOCK_LAYER := 7
+
 var original_parent: Node = null
 
 func mount(player: CharacterBody2D) -> void:
@@ -378,6 +380,10 @@ func mount(player: CharacterBody2D) -> void:
 	player.global_position = boat.global_position
 	if player.has_node("Camera2D"):
 		player.get_node("Camera2D").reset_smoothing()
+
+	# dock collision is only enabled by climbing the dock (dock_1.gd); drop it
+	# when driving so it has to be re-earned by interacting with the dock again
+	player.set_collision_mask_value(DOCK_LAYER, false)
 
 	boat.is_occupied = true
 	boat.driver = player

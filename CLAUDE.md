@@ -147,7 +147,7 @@ Sibling panels under `CanvasLayer` (all start hidden in `_ready`): `DockMenu` (t
 - `level_1.tscn` (the real level, "New Game" target): parallax background, `Background`/`Platform`/`Top-Platform` TileMapLayers, `Dock` (instance of `dock_1.tscn`), `Lever`, `Boat`, `Character`, `Water_Body` (group `water`; debris counts overridden), 3 pickable `Debris`, the tutorial popups, spawn markers, the kill zones and the boundary walls.
 - `level_0.tscn`: a sandbox/test level (water, `ReflectionPatchExample`, one `TileMapLayer`, Boat, Character, 2 Debris, a `Broken-Plank`). Not reachable from the menu.
 - `parallax_background.tscn`: two `Parallax2D` layers (`Background_0` static in x, `Background_1` at 0.4 scroll, repeating), instanced in both levels.
-- `dock_1.tscn` / `dock_1.gd`: the dock also has a `climb_point` marker; pressing `climb_up` near the dock teleports the player to it and enables the `dock` layer (7) in the player's collision mask (the player's default mask does not include it). It also contains the `MarketUI` instance (below).
+- `dock_1.tscn` / `dock_1.gd`: the dock also has a `climb_point` marker; pressing `climb_up` near the dock teleports the player to it and enables the `dock` layer (7) in the player's collision mask (the player's default mask does not include it); mounting the boat (`boat_mount.gd`) clears that bit again, so the player must climb the dock again to collide with it. It also contains the `MarketUI` instance (below).
 
 ## Input actions (`project.godot` → `[input]`)
 

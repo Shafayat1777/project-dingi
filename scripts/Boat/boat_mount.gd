@@ -5,6 +5,8 @@ extends Node2D
 @onready var exit_marker: Marker2D = $ExitMarker
 @onready var boat_driver: Node = get_parent().get_node("BoatDriver")
 
+const DOCK_LAYER := 7
+
 var original_parent: Node = null
 
 func mount(player: CharacterBody2D) -> void:
@@ -27,6 +29,10 @@ func mount(player: CharacterBody2D) -> void:
 	player.global_position = boat.global_position
 	if player.has_node("Camera2D"):
 		player.get_node("Camera2D").reset_smoothing()
+
+	# dock collision is only enabled by climbing the dock (dock_1.gd); drop it
+	# when driving so it has to be re-earned by interacting with the dock again
+	player.set_collision_mask_value(DOCK_LAYER, false)
 
 	boat.is_occupied = true
 	boat.driver = player
