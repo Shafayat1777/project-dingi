@@ -44,20 +44,28 @@ func _physics_process(delta):
 		if is_instance_valid(body):
 			if "receives_water_drag" in body and not body.receives_water_drag:
 				continue
+			if "on_boat" in body and body.on_boat:
+				continue
 			if body is RigidBody2D:
 				body.linear_velocity *= water_drag
 			elif body is CharacterBody2D:
 				body.velocity *= water_drag
 	
-	if bodies_in_water.size() > 0:
+	# bodies standing on the boat (on_boat) aren't actually floating/swimming in
+	# this water - they're just riding something that happens to be nearby/above
+	# it - so they shouldn't be able to trigger or block the idle ripple
+	var idle_ripple_candidates = []
+	for body in bodies_in_water:
+		if is_instance_valid(body) and not ("on_boat" in body and body.on_boat):
+			idle_ripple_candidates.append(body)
+
+	if idle_ripple_candidates.size() > 0:
 		var should_idle_ripple = true
-		for body in bodies_in_water:
-			if not is_instance_valid(body):
-				continue
+		for body in idle_ripple_candidates:
 			var vel = body.linear_velocity if body is RigidBody2D else body.velocity
 			if vel.length() > idle_velocity_threshold:
 				should_idle_ripple = false
-		
+
 		if should_idle_ripple:
 			idle_ripple_timer += delta
 			if idle_ripple_timer >= idle_ripple_interval:
@@ -125,8 +133,14 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		return
 	
 	bodies_in_water.append(body)
-	
-	
+
+	# a body standing on the boat isn't actually touching this water - the
+	# boat's own hull sits low enough that a standing player's collider can
+	# overlap this Area2D at rest, which would otherwise splash the spring
+	# just from walking around on deck
+	if "on_boat" in body and body.on_boat:
+		return
+
 	# we multiply the velocity of the body by the motion factor
 	#if we didn't the speed would be huge, depending on the use case
 	if body is RigidBody2D:
