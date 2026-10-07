@@ -49,7 +49,7 @@ custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
-text = "Press [img=64x64]res://assets/ui/keyboard_f.png[/img] near objects to garb them"
+text = "Press [img=64x64]res://assets/ui/keyboard_f.png[/img] near objects to grab them"
 fit_content = true
 scroll_active = false
 horizontal_alignment = 1

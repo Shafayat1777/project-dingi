@@ -19,7 +19,7 @@ func _on_pressed() -> void:
 	elif click_count == 3:
 		intro_text.text = "[center]Press [img=64x64]res://assets/ui/mouse_left.png[/img] again\nto [color=yellow]recall[/color] the hook[/center]"
 	elif click_count == 4:
-		intro_text.text = "[center]Use the [color=yellow]hook[/color] reach new areas and progress[/center]"
+		intro_text.text = "[center]Use the [color=yellow]hook[/color] to reach new areas and progress[/center]"
 		text = "Ok"
 	else:
 		root.hide()
