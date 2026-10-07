@@ -44,7 +44,18 @@ func constrain_rope(delta):
 		Input.is_action_pressed("climb_up") or Input.is_action_pressed("climb_down")
 	)
 
-	if reeling_object:
+	# Player is driving the boat: they're a child of it with their own physics
+	# disabled, so velocity/move_and_collide on the player would just slide them
+	# off the deck. Pull the boat instead (mass-scaled so it's the same
+	# acceleration as it would give the player) and keep the player riding.
+	var boat := hook.player.get_parent() as RigidBody2D
+	var driving_boat: bool = boat != null and boat.get("driver") == hook.player
+
+	if driving_boat:
+		hook.player.is_swinging = false
+		if not reeling_object:
+			boat.apply_central_force(tension * boat.mass * float(boat.get("hook_pull_multiplier")))
+	elif reeling_object:
 		hook.player.is_swinging = false
 	else:
 		hook.player.is_swinging = true

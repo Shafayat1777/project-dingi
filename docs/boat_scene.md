@@ -51,6 +51,7 @@ Every component grabs the boat via `get_parent()` and sibling nodes by name (`Bo
 **`boat.gd` (root)**
 - `is_on_water` (setter re-applies settings). On water: `linear_damp = 0.5`, friction 0. Off water: `linear_damp = 0.2`, friction 1. Creates a `PhysicsMaterial` if none.
 - State: `is_occupied`, `driver`.
+- `hook_pull_multiplier` (`@export_range(0, 1)`, default 0.3): scales how hard the grappling hook pulls the boat while the player drives it. Read by `swing_controller.gd`; lower = heavier boat / more water resistance.
 - `receives_water_drag = false`: a flag read by `water_spring.gd` so the spring doesn't apply its per-frame velocity drag to the boat (it fought rowing and buoyancy).
 
 **`buoyancy2.gd`** — samples water at the two horizontal ends of the collision shape:
@@ -95,7 +96,7 @@ Respawn: `water_kill_zone.gd` moves the boat back to the `Boat Spawn` marker tog
 
 - `cargo_weight.gd` still prints the mass on every change.
 - Sprite art faces left; flip logic is inverted compared to the usual `flip_h = direction < 0`.
-- While mounted, the player's `Line-Hook` input is not disabled (only `_physics_process` is).
+- While mounted, the player's `Line-Hook` input is not disabled (only `_physics_process` is). `SwingController` detects the driver case (player's parent is a `RigidBody2D` whose `driver` is the player) and applies the rope tension to the boat as `tension * mass * hook_pull_multiplier` instead of to the player, so reeling toward a tilemap anchor moves the boat rather than yanking the player off it. Hooking the boat itself from the boat is not handled.
 - Higher mass from cargo also reduces the acceleration from the fixed 600 row force; buoyancy force is not mass-scaled other than by submersion, so heavy cargo sinks the boat lower (intended).
 - Multiple water bodies: `buoyancy2.gd` picks the first node in group `water` only.
 
@@ -217,6 +218,10 @@ extends RigidBody2D
 	set(value):
 		is_on_water = value
 		_apply_surface_settings()
+
+# scales the hook's pull on the boat while the player drives it (1.0 = full,
+# lower = heavier boat / more water resistance); read by swing_controller.gd
+@export_range(0.0, 1.0, 0.01) var hook_pull_multiplier: float = 0.3
 
 var is_occupied: bool = false
 var driver: CharacterBody2D = null

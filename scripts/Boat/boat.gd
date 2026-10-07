@@ -5,6 +5,10 @@ extends RigidBody2D
 		is_on_water = value
 		_apply_surface_settings()
 
+# scales the hook's pull on the boat while the player drives it (1.0 = full,
+# lower = heavier boat / more water resistance); read by swing_controller.gd
+@export_range(0.0, 1.0, 0.01) var hook_pull_multiplier: float = 0.3
+
 var is_occupied: bool = false
 var driver: CharacterBody2D = null
 

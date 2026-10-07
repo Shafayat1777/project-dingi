@@ -964,6 +964,7 @@ water_killzone = NodePath("../WaterKillZone")
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("5_0b1c0")]
 position = Vector2(8541, 324)
+hook_pull_multiplier = 0.1
 
 [node name="Character" parent="." unique_id=376624278 instance=ExtResource("2_gdhxt")]
 position = Vector2(7486, 376)

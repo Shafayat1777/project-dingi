@@ -120,7 +120,7 @@ Runtime vars: `state`, `stuck_body`, `current_rope_length`, `attach_offset` (sti
 - **Pickups:** `HookInput` refuses to throw while `HeldItemManager.is_held`; the same `shoot` action throws held items in `grab_object.gd`.
 - **Objects towed:** any `RigidBody2D` on `stick_to_layers` (e.g. Debris, planks) can be pulled with the rope.
 - **Boat:** boat layer (128) is in the Character's `stick_to_layers`, so the hook can stick to the boat.
-- **Mounted on boat:** the hook lives under the player, and mounting only disables the player's `_physics_process`, not `HookInput._input`, so from the code the hook can still be thrown while aboard.
+- **Mounted on boat:** the hook lives under the player, and mounting only disables the player's `_physics_process`, not `HookInput._input`, so the hook can still be thrown while aboard. `SwingController` detects a driving player (parent is a `RigidBody2D` with `driver == player`) and applies the rope tension to the boat via `apply_central_force(tension * mass * hook_pull_multiplier)` instead of the player's velocity; `is_swinging` stays false and the `move_and_collide` safety push is skipped. `hook_pull_multiplier` is an export on `boat.gd` (see [boat_scene.md](boat_scene.md)).
 - `trajectory.gd` (aim preview) is unrelated to this hook; it's a separate dead-end throw preview (see character doc).
 
 ## Open items / gotchas
@@ -671,7 +671,18 @@ func constrain_rope(delta):
 		Input.is_action_pressed("climb_up") or Input.is_action_pressed("climb_down")
 	)
 
-	if reeling_object:
+	# Player is driving the boat: they're a child of it with their own physics
+	# disabled, so velocity/move_and_collide on the player would just slide them
+	# off the deck. Pull the boat instead (mass-scaled so it's the same
+	# acceleration as it would give the player) and keep the player riding.
+	var boat := hook.player.get_parent() as RigidBody2D
+	var driving_boat: bool = boat != null and boat.get("driver") == hook.player
+
+	if driving_boat:
+		hook.player.is_swinging = false
+		if not reeling_object:
+			boat.apply_central_force(tension * boat.mass * float(boat.get("hook_pull_multiplier")))
+	elif reeling_object:
 		hook.player.is_swinging = false
 	else:
 		hook.player.is_swinging = true

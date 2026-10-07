@@ -60,7 +60,7 @@ Autoloaded (see `[autoload]` in `project.godot`; the only other autoload is `Pau
 
 **Boat (`scripts/Boat/`, `scenes/Boat/boat.tscn`)** — see `docs/boat_scene.md`.
 A rideable, floating `RigidBody2D` composed of sibling `Node`/`Node2D` components under the boat scene, each owning one concern:
-- `boat.gd` — root script on the boat `RigidBody2D` itself; toggles `linear_damp`/friction depending on `is_on_water` (set externally by `buoyancy2.gd`).
+- `boat.gd` — root script on the boat `RigidBody2D` itself; toggles `linear_damp`/friction depending on `is_on_water` (set externally by `buoyancy2.gd`). Exports `hook_pull_multiplier`, which scales the grappling hook's pull on the boat while the player drives it (`SwingController` applies the rope tension to the boat instead of the mounted player).
 - `boat_highlight.gd` — listens for the player entering/exiting a detection `Area2D`, shows an outline + "press E" label, and on `interact` calls `BoatMount.mount()`/`dismount()` depending on `boat.is_occupied`.
 - `boat_mount.gd` (`BoatMount`) — the actual mount/dismount logic: reparents the player `CharacterBody2D` onto the boat (disabling its own `CollisionShape2D` and physics process while aboard), positions it at an `ExitMarker` on dismount, and toggles `BoatDriver.set_active()`.
 - `boat_driver.gd` (`BoatDriver`) — only runs while `active` (i.e. while mounted); applies rowing force from `left`/`right` input directly to the boat body, capped at `max_speed`.
