@@ -956,10 +956,11 @@ tile_set = SubResource("TileSet_6f4wy")
 [node name="Dock" parent="." unique_id=551199909 instance=ExtResource("3_nwlqg")]
 position = Vector2(10229, 382)
 
-[node name="Lever" parent="." unique_id=44465360 node_paths=PackedStringArray("tilemap", "waterbody") instance=ExtResource("7_up3t7")]
+[node name="Lever" parent="." unique_id=44465360 node_paths=PackedStringArray("tilemap", "waterbody", "water_killzone") instance=ExtResource("7_up3t7")]
 position = Vector2(7872, 328)
 tilemap = NodePath("../FloodGate")
 waterbody = NodePath("../Water_Body")
+water_killzone = NodePath("../WaterKillZone")
 
 [node name="Boat" parent="." unique_id=1550122346 instance=ExtResource("5_0b1c0")]
 position = Vector2(8541, 324)
@@ -1025,7 +1026,7 @@ rotation = 1.5707964
 spawn = NodePath("../ObjectSpawner")
 
 [node name="WaterKillZone" parent="." unique_id=163645284 node_paths=PackedStringArray("spawn", "boatspawn", "boat") instance=ExtResource("14_5d2oq")]
-position = Vector2(15063, 822)
+position = Vector2(15661, 822)
 spawn = NodePath("../Spawn-4")
 boatspawn = NodePath("../Boat Spawn")
 boat = NodePath("../Boat")

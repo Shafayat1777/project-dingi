@@ -249,5 +249,12 @@ script = ExtResource("6_8idae")
 position = Vector2(-1, -52)
 
 [node name="Line-Hook" parent="." unique_id=118512847 node_paths=PackedStringArray("player") instance=ExtResource("8_5lfdo")]
+throw_speed = 800.0
+recall_speed = 1000.0
+max_range = 600.0
+min_range = 5.0
+reel_speed = 200.0
 stick_to_layers = 197
 player = NodePath("..")
+drag_strength = 900.0
+reel_pull_strength = 600.0
