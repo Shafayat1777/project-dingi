@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InvItem" format=3 uid="uid://brn1pt3ghrm5n"]
+
+[ext_resource type="Script" uid="uid://bi2m6et345oys" path="res://resource/inventory/inventory_item.gd" id="1_e80w8"]
+[ext_resource type="Texture2D" uid="uid://bc2w0df3bimx2" path="res://assets/inventory/inventory_items_icon.png" id="2_0eeh1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ep2qv"]
+atlas = ExtResource("2_0eeh1")
+region = Rect2(0, 208, 16, 16)
+
+[resource]
+script = ExtResource("1_e80w8")
+name = "flask"
+texture = SubResource("AtlasTexture_ep2qv")
+metadata/_custom_type_script = "uid://bi2m6et345oys"
