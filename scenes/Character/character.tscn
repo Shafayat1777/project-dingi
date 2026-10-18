@@ -2,11 +2,20 @@
 
 [ext_resource type="Texture2D" uid="uid://ds6xc7px0e4t" path="res://assets/character/IDLE.png" id="1_oakiv"]
 [ext_resource type="Script" uid="uid://ekgtxq17mo4u" path="res://scripts/character/character_movement.gd" id="1_yenhn"]
+[ext_resource type="Script" uid="uid://bi2m6et345oys" path="res://resource/inventory/items/inventory_item.gd" id="2_oeylr"]
+[ext_resource type="Resource" uid="uid://brn1pt3ghrm5n" path="res://resource/inventory/items/flask.tres" id="3_b2sdu"]
 [ext_resource type="Texture2D" uid="uid://cm2u38hkmgcfa" path="res://assets/character/RUN.png" id="3_fqfur"]
 [ext_resource type="Texture2D" uid="uid://bmo7mosbxtdfy" path="res://assets/character/ATTACK 1.png" id="3_fsvua"]
+[ext_resource type="Script" uid="uid://qirf0ddthn2f" path="res://resource/inventory/inventory.gd" id="4_dqstb"]
 [ext_resource type="PackedScene" uid="uid://5wipwqvwd6kx" path="res://scenes/Character/trajectory.tscn" id="5_6xo28"]
 [ext_resource type="Script" uid="uid://d4kv7afy0hef4" path="res://scripts/character/camera_pan.gd" id="6_8idae"]
 [ext_resource type="PackedScene" uid="uid://1ltmwanatlap" path="res://scenes/Throwable/line_hook.tscn" id="8_5lfdo"]
+[ext_resource type="PackedScene" uid="uid://c0w41g4wuxt2b" path="res://scenes/Inventory/inv_ui.tscn" id="11_b2sdu"]
+
+[sub_resource type="Resource" id="Resource_xi2ao"]
+script = ExtResource("4_dqstb")
+items = Array[ExtResource("2_oeylr")]([null, null, ExtResource("3_b2sdu"), null, null, null, null, null, null, null, null, null])
+metadata/_custom_type_script = "uid://qirf0ddthn2f"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tuv23"]
 size = Vector2(20, 63)
@@ -222,6 +231,7 @@ animations = [{
 collision_layer = 2
 collision_mask = 391
 script = ExtResource("1_yenhn")
+inv = SubResource("Resource_xi2ao")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1778992500]
 position = Vector2(-1, 0.5)
@@ -258,3 +268,5 @@ stick_to_layers = 197
 player = NodePath("..")
 drag_strength = 900.0
 reel_pull_strength = 600.0
+
+[node name="Inv_Ui" parent="." unique_id=1415323031 instance=ExtResource("11_b2sdu")]

@@ -11,6 +11,7 @@ var push_force = 60.0
 @export var swing_push_force := 600.0
 @export var standing_weight_force := 400.0
 @export var water_push_force := 300.0
+@export var inv: Inv
 
 var is_swinging := false
 var on_boat := false

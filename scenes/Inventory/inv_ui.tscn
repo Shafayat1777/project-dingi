@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://c0w41g4wuxt2b"]
+
+[ext_resource type="Script" uid="uid://deu7nhw06siaf" path="res://scenes/Inventory/inv_ui.gd" id="1_mphdn"]
+[ext_resource type="Texture2D" uid="uid://bnca75vguafaq" path="res://assets/ui/MediavelFree.png" id="2_nndk0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6f4wy"]
+atlas = ExtResource("2_nndk0")
+region = Rect2(3, 1, 71, 92)
+
+[node name="Inv_Ui" type="Control" unique_id=1415323031]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("1_mphdn")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=822467550]
+layout_mode = 0
+offset_right = 189.175
+offset_bottom = 161.0
+texture = SubResource("AtlasTexture_6f4wy")
+region_rect = Rect2(0, 20, 71, 72)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
