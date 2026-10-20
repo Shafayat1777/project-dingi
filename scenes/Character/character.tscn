@@ -269,4 +269,6 @@ player = NodePath("..")
 drag_strength = 900.0
 reel_pull_strength = 600.0
 
-[node name="Inv_Ui" parent="." unique_id=1415323031 instance=ExtResource("11_b2sdu")]
+[node name="InvLayer" type="CanvasLayer" parent="." unique_id=667218562]
+
+[node name="Inv_Ui" parent="InvLayer" unique_id=1415323031 instance=ExtResource("11_b2sdu")]

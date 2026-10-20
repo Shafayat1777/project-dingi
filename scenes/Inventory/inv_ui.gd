@@ -9,6 +9,7 @@ func _ready() -> void:
 
 func _unhandled_input(event):
 	if event.is_action_pressed("inventory"):
+		print('f')
 		if is_open:
 			close()
 		else:

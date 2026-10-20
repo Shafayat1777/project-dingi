@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bmvaiwoj53g5k"]
+
+[ext_resource type="Texture2D" uid="uid://bnca75vguafaq" path="res://assets/ui/MediavelFree.png" id="1_5pumo"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6f4wy"]
+atlas = ExtResource("1_5pumo")
+region = Rect2(84, 100, 24, 25)
+
+[node name="Inv_Slot" type="Panel" unique_id=1677978647]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(24, 25)
+offset_right = 42.0
+offset_bottom = 43.75
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1191541009]
+scale = Vector2(1.75, 1.75)
+texture = SubResource("AtlasTexture_6f4wy")
+centered = false
